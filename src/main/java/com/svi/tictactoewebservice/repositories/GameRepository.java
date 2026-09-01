@@ -29,9 +29,9 @@ public class GameRepository {
         return !Files.exists(playerFile);
     }
 
-    public boolean gameExists(String gameId) {
+    public boolean gameNotExists(String gameId) {
         Path gameFile = getRecordsPath().resolve(gameId + ".txt");
-        return Files.exists(gameFile);
+        return !Files.exists(gameFile);
     }
 
     public List<JsonObject> getPlayerGames(String playerId) {
@@ -47,6 +47,30 @@ public class GameRepository {
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to retrieve player games.", e);
+        }
+    }
+
+    public List<JsonObject> getGameMoves(String gameId) {
+        Path gameFile = getRecordsPath().resolve(gameId + ".txt");
+
+        try (Stream<String> lines = Files.lines(gameFile, StandardCharsets.UTF_8)) {
+            return lines
+                    .filter(line -> !line.isEmpty())
+                    .filter(line -> line.split(",").length == 5)
+                    .map(details -> {
+                        String[] parsed = details.split(",");
+                        return Json.createObjectBuilder()
+                                .add("id", parsed[0])
+                                .add("playerid", parsed[1])
+                                .add("symbol", parsed[2])
+                                .add("location", parsed[3])
+                                .add("datasaved", parsed[4])
+                                .build();
+                    } )
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to retrieve game moves.", e);
         }
     }
 

@@ -25,12 +25,19 @@ public class GameService {
     }
 
     public List<JsonObject> listPlayerGames(String playerId) {
-        System.out.println(playerId);
         if (gameRepository.playerNotExists(playerId)) {
             throw new RecordNotFoundException("Record not found");
         }
 
         return gameRepository.getPlayerGames(playerId);
+    }
+
+    public List<JsonObject> listGameMoves(String playerId) {
+        if (gameRepository.gameNotExists(playerId)) {
+            throw new RecordNotFoundException("Record not found");
+        }
+
+        return gameRepository.getGameMoves(playerId);
     }
 
 
