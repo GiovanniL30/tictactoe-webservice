@@ -1,11 +1,13 @@
 package com.svi.tictactoewebservice.services;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
+import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.repositories.GameRepository;
-import com.svi.tictactoewebservice.utils.DateTimeUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.JsonObject;
+import java.util.List;
 
 @ApplicationScoped
 public class GameService {
@@ -20,6 +22,15 @@ public class GameService {
         );
 
         gameRepository.saveGameMove(request);
+    }
+
+    public List<JsonObject> listPlayerGames(String playerId) {
+        System.out.println(playerId);
+        if (gameRepository.playerNotExists(playerId)) {
+            throw new RecordNotFoundException("Record not found");
+        }
+
+        return gameRepository.getPlayerGames(playerId);
     }
 
 

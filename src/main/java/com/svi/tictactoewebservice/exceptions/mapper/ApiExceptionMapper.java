@@ -1,6 +1,7 @@
 package com.svi.tictactoewebservice.exceptions.mapper;
 
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
+import com.svi.tictactoewebservice.exceptions.ApiException;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -8,16 +9,15 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException> {
+public class ApiExceptionMapper implements ExceptionMapper<ApiException> {
 
     @Override
-    public Response toResponse(RuntimeException exception) {
-        exception.printStackTrace();
+    public Response toResponse(ApiException exception) {
 
         return Response
-                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .status(exception.getStatus())
                 .type(MediaType.APPLICATION_JSON)
-                .entity(new ApiResponse(String.format("The server ran into an unexpected exception. :%s", exception.getMessage())))
+                .entity(new ApiResponse(exception.getMessage()))
                 .build();
     }
 }

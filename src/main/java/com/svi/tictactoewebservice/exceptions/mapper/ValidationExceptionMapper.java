@@ -20,10 +20,11 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
 
         Set<ConstraintViolation<?>> violations = exception.getConstraintViolations();
 
-        List<String> errors = violations.stream().map(violation -> violation.getPropertyPath()
-                        .toString()
-                        .substring(violation.getPropertyPath().toString().lastIndexOf('.') + 1) + ": " + violation.getMessage())
-                        .collect(Collectors.toList());
+        List<String> errors = violations.stream()
+                .map(violation -> violation.getPropertyPath()
+                .toString()
+                .substring(violation.getPropertyPath().toString().lastIndexOf('.') + 1) + ": " + violation.getMessage())
+                .collect(Collectors.toList());
 
         return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity(new ErrorResponse("Validation failed.", errors)).build();
     }

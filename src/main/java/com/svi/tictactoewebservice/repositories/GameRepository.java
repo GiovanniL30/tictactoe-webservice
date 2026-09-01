@@ -3,6 +3,8 @@ package com.svi.tictactoewebservice.repositories;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
@@ -20,23 +24,50 @@ public class GameRepository {
     @Context
     private ServletContext servletContext;
 
+    public boolean playerNotExists(String playerId) {
+        Path playerFile = getRecordsPath().resolve(playerId + ".txt");
+        return !Files.exists(playerFile);
+    }
+
+    public boolean gameExists(String gameId) {
+        Path gameFile = getRecordsPath().resolve(gameId + ".txt");
+        return Files.exists(gameFile);
+    }
+
+    public List<JsonObject> getPlayerGames(String playerId) {
+        Path playerFile = getRecordsPath().resolve(playerId + ".txt");
+
+        try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
+            return lines
+                    .filter(line -> !line.isEmpty())
+                    .map(gameId -> Json.createObjectBuilder()
+                            .add("id", gameId)
+                            .build())
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to retrieve player games.", e);
+        }
+    }
+
     public void savePlayerGame(String playerId, String gameId) {
         Path recordsPath = getRecordsPath();
         Path playerFile = recordsPath.resolve(playerId + ".txt");
 
         try {
-            if (!Files.exists(playerFile)) {
+            if (playerNotExists(playerId)) {
                 Files.write(playerFile, (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
                 return;
             }
 
-            boolean gameExists;
+            boolean gameAlreadyRecorded;
 
             try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
-                gameExists = lines.anyMatch(gameId::equals);
+
+                gameAlreadyRecorded = lines.anyMatch(gameId::equals);
             }
 
-            if (!gameExists) {
+            if (!gameAlreadyRecorded) {
                 Files.write(playerFile, (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
             }
 
@@ -46,8 +77,7 @@ public class GameRepository {
     }
 
     public void saveGameMove(SaveMoveRequest request) {
-        Path recordsPath = getRecordsPath();
-        Path gameFile = recordsPath.resolve(request.getGameId() + ".txt");
+        Path gameFile = getRecordsPath().resolve(request.getGameId() + ".txt");
 
         String record = String.join(",", request.getGameId(), request.getPlayerId(), request.getSymbol(), String.valueOf(request.getLocation()), request.getDatetime());
 
