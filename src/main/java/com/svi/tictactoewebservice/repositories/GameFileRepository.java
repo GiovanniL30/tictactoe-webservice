@@ -19,27 +19,29 @@ import java.util.stream.Stream;
 @ApplicationScoped
 public class GameFileRepository {
 
-    private static final String RECORDS_PATH_ATTRIBUTE = "recordsPath";
+    private static final String GAME_RECORDS_PATH_ATTRIBUTE = "gameRecordsPath";
+    private static final String PLAYER_RECORDS_PATH_ATTRIBUTE = "playerRecordsPath";
 
     @Context
     private ServletContext servletContext;
 
     public boolean playerNotExists(String playerId) {
-        Path playerFile = getRecordsPath().resolve(playerId + ".txt");
+        Path playerFile = getPlayerRecordsPath().resolve(playerId + ".txt");
+
         return !Files.exists(playerFile);
     }
 
     public boolean gameNotExists(String gameId) {
-        Path gameFile = getRecordsPath().resolve(gameId + ".txt");
+        Path gameFile = getGameRecordsPath().resolve(gameId + ".txt");
+
         return !Files.exists(gameFile);
     }
 
     public List<JsonObject> getPlayerGames(String playerId) {
-        Path playerFile = getRecordsPath().resolve(playerId + ".txt");
+        Path playerFile = getPlayerRecordsPath().resolve(playerId + ".txt");
 
         try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
-            return lines
-                    .filter(line -> !line.isEmpty())
+            return lines.filter(line -> !line.isEmpty())
                     .map(gameId -> Json.createObjectBuilder()
                             .add("id", gameId)
                             .build())
@@ -51,22 +53,20 @@ public class GameFileRepository {
     }
 
     public List<JsonObject> getGameMoves(String gameId) {
-        Path gameFile = getRecordsPath().resolve(gameId + ".txt");
+        Path gameFile = getGameRecordsPath().resolve(gameId + ".txt");
 
         try (Stream<String> lines = Files.lines(gameFile, StandardCharsets.UTF_8)) {
-            return lines
-                    .filter(line -> !line.isEmpty())
-                    .filter(line -> line.split(",").length == 5)
-                    .map(details -> {
-                        String[] parsed = details.split(",");
-                        return Json.createObjectBuilder()
-                                .add("id", parsed[0])
-                                .add("playerid", parsed[1])
-                                .add("symbol", parsed[2])
-                                .add("location", parsed[3])
-                                .add("datasaved", parsed[4])
-                                .build();
-                    } )
+            return lines.filter(line -> !line.isEmpty())
+                    .map(line -> line.split(",", 5))
+                    .filter(parts -> parts.length == 5)
+                    .map(parts ->
+                            Json.createObjectBuilder()
+                                    .add("id", parts[0])
+                                    .add("playerid", parts[1])
+                                    .add("symbol", parts[2])
+                                    .add("location", parts[3])
+                                    .add("datasaved", parts[4])
+                                    .build())
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
@@ -75,24 +75,27 @@ public class GameFileRepository {
     }
 
     public void savePlayerGame(String playerId, String gameId) {
-        Path recordsPath = getRecordsPath();
-        Path playerFile = recordsPath.resolve(playerId + ".txt");
+        Path playerFile = getPlayerRecordsPath().resolve(playerId + ".txt");
 
         try {
             if (playerNotExists(playerId)) {
-                Files.write(playerFile, (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                Files.write(playerFile,
+                        (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.WRITE);
                 return;
             }
 
             boolean gameAlreadyRecorded;
 
             try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
-
                 gameAlreadyRecorded = lines.anyMatch(gameId::equals);
             }
 
             if (!gameAlreadyRecorded) {
-                Files.write(playerFile, (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.APPEND);
+                Files.write(playerFile,
+                        (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.APPEND);
             }
 
         } catch (IOException e) {
@@ -101,7 +104,7 @@ public class GameFileRepository {
     }
 
     public void saveGameMove(SaveMoveRequest request) {
-        Path gameFile = getRecordsPath().resolve(request.getGameId() + ".txt");
+        Path gameFile = getGameRecordsPath().resolve(request.getGameId() + ".txt");
 
         String record = String.join(",", request.getGameId(), request.getPlayerId(), request.getSymbol(), String.valueOf(request.getLocation()), request.getDatetime());
 
@@ -113,7 +116,11 @@ public class GameFileRepository {
         }
     }
 
-    private Path getRecordsPath() {
-        return (Path) servletContext.getAttribute(RECORDS_PATH_ATTRIBUTE);
+    private Path getGameRecordsPath() {
+        return (Path) servletContext.getAttribute(GAME_RECORDS_PATH_ATTRIBUTE);
+    }
+
+    private Path getPlayerRecordsPath() {
+        return (Path) servletContext.getAttribute(PLAYER_RECORDS_PATH_ATTRIBUTE);
     }
 }
