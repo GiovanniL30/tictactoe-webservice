@@ -14,6 +14,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class GameController {
 
     @Inject
@@ -21,8 +23,6 @@ public class GameController {
 
     @GET
     @Path("/v1/list-games/{playerId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response listGames(@PathParam("playerId") String playerId) {
         List<JsonObject> playerGames = gameService.listPlayerGames(playerId);
 
@@ -31,8 +31,6 @@ public class GameController {
 
     @GET
     @Path("/v1/game/{gameId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response listGameMoves(@PathParam("gameId") String gameId) {
         List<JsonObject> gameMoves = gameService.listGameMoves(gameId);
 
@@ -41,8 +39,6 @@ public class GameController {
 
     @POST
     @Path("/v1/game/save")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response saveGameData(@Valid SaveMoveRequest saveMoveRequest) {
         if (saveMoveRequest == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ApiResponse("Request body is required.")).build();
