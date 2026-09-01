@@ -1,15 +1,23 @@
 package com.svi.tictactoewebservice;
 
-
+import javax.servlet.ServletContext;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
-@Path("/hello-world")
+@javax.ws.rs.Path("/hello-world")
 public class HelloResource {
+
+    @Context
+    private ServletContext servletContext;
+
     @GET
     @Produces("text/plain")
     public String hello() {
-        return "Hello, World!";
+
+        java.nio.file.Path recordsPath =
+                (java.nio.file.Path) servletContext.getAttribute("recordsPath");
+
+        return "Records path: " + recordsPath;
     }
 }
