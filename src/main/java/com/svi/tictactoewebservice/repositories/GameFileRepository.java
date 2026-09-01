@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class GameRepository {
+public class GameFileRepository {
 
     private static final String RECORDS_PATH_ATTRIBUTE = "recordsPath";
 
