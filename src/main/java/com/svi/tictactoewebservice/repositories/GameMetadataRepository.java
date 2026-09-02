@@ -1,23 +1,24 @@
 package com.svi.tictactoewebservice.repositories;
 
-import com.svi.tictactoewebservice.exceptions.PlayerAlreadyExistsException;
-import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
-import com.svi.tictactoewebservice.exceptions.RoomAlreadyFullException;
-import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
+import com.svi.tictactoewebservice.exceptions.*;
+import com.svi.tictactoewebservice.models.GameKey;
 import com.svi.tictactoewebservice.models.PlayerData;
+import com.svi.tictactoewebservice.models.Symbol;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.SecureRandom;
+import java.util.*;
 
 @ApplicationScoped
 public class GameMetadataRepository {
 
+    private final SecureRandom RANDOM = new SecureRandom();
+
     // Room code : Players
     private final Map<String, List<PlayerData>> rooms = new HashMap<>();
 
+    // Room code : Current Game UUID
+    private final Map<String, String> gameUUIDs = new HashMap<>();
 
     public PlayerData addPlayer(String roomCode, PlayerData player) {
         validateRoomNotFull(roomCode);
@@ -46,6 +47,14 @@ public class GameMetadataRepository {
             }
         }
 
+        // X must be the first player in the room
+        if ((players == null || players.isEmpty())
+                && player.getSymbol() != Symbol.X) {
+            throw new SymbolOrderException(
+                    "Player X must be the first player to join the room."
+            );
+        }
+
         if (players == null) {
             players = new ArrayList<>();
             rooms.put(roomCode, players);
@@ -60,12 +69,19 @@ public class GameMetadataRepository {
     }
 
     public List<PlayerData> removeRoom(String roomCode) {
+        gameUUIDs.remove(roomCode);
         return rooms.remove(roomCode);
     }
 
+    public String regenerateGameUUID(String roomCode) {
+        String newGameId = UUID.randomUUID().toString();
+        gameUUIDs.put(roomCode, newGameId);
+        return newGameId;
+    }
+
     public PlayerData increasePlayerScore(String roomCode, String playerId, int count) {
-        if(roomNotExists(roomCode)) {
-            throw  new RecordNotFoundException("Room Code does not exists.");
+        if (roomNotExists(roomCode)) {
+            throw new RecordNotFoundException("Room Code does not exists.");
         }
 
         List<PlayerData> players = rooms.get(roomCode);
@@ -87,11 +103,44 @@ public class GameMetadataRepository {
                 || !rooms.containsKey(roomCode);
     }
 
+    public GameKey generateRoomKeys() {
+        String roomCode = generateRoomCode();
+
+        String gameId = gameUUIDs.computeIfAbsent(roomCode, key -> UUID.randomUUID().toString());
+
+        return new GameKey(roomCode, gameId);
+    }
+
+    public String getRoomUUID(String roomCode) {
+        String gameId = gameUUIDs.get(roomCode);
+
+        if (gameId == null) {
+            throw new RecordNotFoundException(
+                    "Room code does not exist."
+            );
+        }
+
+        return gameId;
+    }
+
     private void validateRoomNotFull(String roomCode) {
         if (!roomNotExists(roomCode) && rooms.get(roomCode).size() >= 2) {
             throw new RoomAlreadyFullException(
                     "Room already contains 2 players. Cannot add more players."
             );
         }
+    }
+
+
+    private String generateRoomCode() {
+        String roomCodeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder code = new StringBuilder(4);
+
+        for (int i = 0; i < 4; i++) {
+            int index = RANDOM.nextInt(roomCodeCharacters.length());
+            code.append(roomCodeCharacters.charAt(index));
+        }
+
+        return code.toString();
     }
 }

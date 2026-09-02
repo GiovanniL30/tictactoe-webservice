@@ -3,6 +3,7 @@ package com.svi.tictactoewebservice.services;
 import com.svi.tictactoewebservice.dto.request.IncreasePlayerScoreRequest;
 import com.svi.tictactoewebservice.dto.request.PlayerRequest;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
+import com.svi.tictactoewebservice.models.GameKey;
 import com.svi.tictactoewebservice.models.PlayerData;
 import com.svi.tictactoewebservice.models.Symbol;
 import com.svi.tictactoewebservice.repositories.GameMetadataRepository;
@@ -41,5 +42,20 @@ public class GameMetadataService {
         return gameMetadataRepository.increasePlayerScore(playerScoreRequest.getRoomCode(), playerScoreRequest.getPlayerId(), 1);
     }
 
+    public GameKey generateRoomKeys() {
+        return gameMetadataRepository.generateRoomKeys();
+    }
+
+    public String getRoomUUID(String roomCode) {
+        return  gameMetadataRepository.getRoomUUID(roomCode);
+    }
+
+    public String removeGameUUID(String roomCode) {
+        if (gameMetadataRepository.roomNotExists(roomCode)) {
+            throw new RecordNotFoundException(String.format("Room Code '%s' does not exist.", roomCode));
+        }
+
+        return gameMetadataRepository.regenerateGameUUID(roomCode);
+    }
 
 }

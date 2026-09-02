@@ -3,8 +3,10 @@ package com.svi.tictactoewebservice.controllers;
 import com.svi.tictactoewebservice.dto.request.IncreasePlayerScoreRequest;
 import com.svi.tictactoewebservice.dto.request.PlayerRequest;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
+import com.svi.tictactoewebservice.dto.response.GameKeyResponse;
 import com.svi.tictactoewebservice.dto.response.GetPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.IncreasePlayerScoreResponse;
+import com.svi.tictactoewebservice.models.GameKey;
 import com.svi.tictactoewebservice.models.PlayerData;
 import com.svi.tictactoewebservice.services.GameMetadataService;
 
@@ -31,6 +33,21 @@ public class GameMetadataController {
 
         return Response.ok(new GetPlayersResponse("Players found.", players)).build();
     }
+
+    @GET
+    @Path("/v1/data/game-key/generate")
+    public Response generateRoomKeys() {
+        GameKey gameKey = gameMetadataService.generateRoomKeys();
+        return Response.ok(new GameKeyResponse("Generated Room Keys.", gameKey)).build();
+    }
+
+    @GET
+    @Path("/v1/data/game-key/{roomCode}")
+    public Response getRoomUUID(@PathParam("roomCode") String roomCode) {
+        String gameRoomUUID = gameMetadataService.getRoomUUID(roomCode);
+        return Response.ok(new GameKeyResponse("Room Keys", new GameKey(roomCode, gameRoomUUID))).build();
+    }
+
 
     @POST
     @Path("/v1/data/player/{roomCode}")
@@ -69,5 +86,12 @@ public class GameMetadataController {
     public Response deleteGameData(@PathParam("roomCode") String roomCode) {
         List<PlayerData> deletedPlayers = gameMetadataService.deleteRoom(roomCode);
         return Response.ok(new GetPlayersResponse("Game data deleted.", deletedPlayers)).build();
+    }
+
+    @PATCH
+    @Path("/v1/data/game-key/regenerate/{roomCode}")
+    public Response regenerateGameUUID(@PathParam("roomCode") String roomCode) {
+        String newGameUUID = gameMetadataService.removeGameUUID(roomCode);
+        return Response.ok(new GameKeyResponse("Game UUID regenerated.", new GameKey(roomCode, newGameUUID))).build();
     }
 }
