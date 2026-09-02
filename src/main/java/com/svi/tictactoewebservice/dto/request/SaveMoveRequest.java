@@ -1,21 +1,25 @@
 package com.svi.tictactoewebservice.dto.request;
 
 import javax.json.bind.annotation.JsonbProperty;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 public class SaveMoveRequest {
 
-    @NotBlank
+    @NotBlank(message = "gameid is required.")
     @Pattern(
             regexp = "^[A-Z0-9]+_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             message = "Game ID must follow the format PREFIX_UUID."
     )
     @JsonbProperty("gameid")
     private String gameId;
+
+    @NotBlank(message = "roomcode is required.")
+    @Pattern(
+            regexp = "^[A-Z0-9]+$",
+            message = "Room code must contain only uppercase letters and numbers."
+    )
+    @JsonbProperty("roomcode")
+    private String roomCode;
 
     @NotBlank
     @Pattern(regexp = "[XO]", message = "Symbol must be either X or O")
@@ -26,11 +30,8 @@ public class SaveMoveRequest {
     @Max(value = 9, message = "Location must be between 0 and 9.")
     private Integer location;
 
-    @NotBlank
-    @Pattern(
-            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-            message = "Player ID must be a valid UUID."
-    )
+    @NotBlank(message = "Player ID is required.")
+    @Size(min = 3, max = 7, message = "Player ID must be between 3 and 7 characters.")
     @JsonbProperty("playerid")
     private String playerId;
 
@@ -83,5 +84,13 @@ public class SaveMoveRequest {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
     }
 }

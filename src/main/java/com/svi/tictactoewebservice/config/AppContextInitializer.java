@@ -14,7 +14,7 @@ public class AppContextInitializer implements ServletContextListener {
 
     private static final String GAME_RECORDS_PATH = "gameRecordsPath";
     private static final String PLAYER_RECORDS_PATH = "playerRecordsPath";
-    private static final String GAME_DATA_PATH = "gameDataPath";
+    private static final String ROOMS_RECORDS_PATH = "roomsRecordsPath";
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -27,22 +27,19 @@ public class AppContextInitializer implements ServletContextListener {
 
             Path recordsPath = projectPath.resolve("records");
 
-            Path gameRecordsPath = recordsPath.resolve("game");
+            Path gameRecordsPath = recordsPath.resolve("games");
             Path playerRecordsPath = recordsPath.resolve("players");
-            Path gameDataPath = recordsPath.resolve("game-data.json");
+            Path roomsRecordsPath = recordsPath.resolve("rooms");
 
             Files.createDirectories(gameRecordsPath);
             Files.createDirectories(playerRecordsPath);
-
-            if (Files.notExists(gameDataPath)) {
-                Files.write(gameDataPath, "{}".getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-            }
+            Files.createDirectories(roomsRecordsPath);
 
             event.getServletContext().setAttribute(GAME_RECORDS_PATH, gameRecordsPath);
 
             event.getServletContext().setAttribute(PLAYER_RECORDS_PATH, playerRecordsPath);
 
-            event.getServletContext().setAttribute(GAME_DATA_PATH, gameDataPath);
+            event.getServletContext().setAttribute(ROOMS_RECORDS_PATH, roomsRecordsPath);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize records directories.", e);

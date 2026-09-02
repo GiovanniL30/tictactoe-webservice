@@ -3,14 +3,12 @@ package com.svi.tictactoewebservice.dto.request;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class IncreasePlayerScoreRequest {
 
-    @NotBlank
-    @Pattern(
-            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-            message = "Player ID must be a valid UUID."
-    )
+    @NotBlank(message = "Player ID is required.")
+    @Size(min = 3, max = 7, message = "Player ID must be between 3 and 7 characters.")
     @JsonbProperty("playerid")
     private String playerId;
 

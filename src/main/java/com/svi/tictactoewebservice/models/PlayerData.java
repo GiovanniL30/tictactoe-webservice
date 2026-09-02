@@ -2,34 +2,24 @@ package com.svi.tictactoewebservice.models;
 
 public class PlayerData {
 
-    private String uuid;
-    private String name;
+    private String playerId;
     private int score;
     private int streakCount;
     private Symbol symbol;
 
-    public PlayerData(String uuid, String name, int score,  int streakCount, Symbol symbol) {
-        this.uuid = uuid;
-        this.name = name;
+    public PlayerData(String playerId, int score, int streakCount, Symbol symbol) {
+        this.playerId = playerId;
         this.score = score;
-        this.symbol = symbol;
         this.streakCount = streakCount;
+        this.symbol = symbol;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getPlayerId() {
+        return playerId;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     public int getScore() {

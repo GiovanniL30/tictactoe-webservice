@@ -18,11 +18,8 @@ public class GameDataService {
     @Inject
     private GameDataRepository gameDataRepository;
 
-    public List<PlayerData> addPlayers(String roomCode, List<PlayerRequest> players) {
-        List<PlayerData> transformed = players.stream()
-                .map(player -> new PlayerData(player.getPlayerId(),player.getName(), 0, 0, Symbol.fromString(player.getSymbol())))
-                .collect(Collectors.toList());
-        return gameDataRepository.addPlayers(roomCode, transformed);
+    public PlayerData addPlayer(String roomCode, PlayerRequest player) {
+        return gameDataRepository.addPlayer(roomCode, new PlayerData(player.getPlayerId(), 0, 0, Symbol.fromString(player.getSymbol())));
     }
 
     public List<PlayerData> getPlayers(String roomCode) {
