@@ -18,6 +18,10 @@ public class PlayerRequest {
     @JsonbProperty("name")
     private String name;
 
+    @NotBlank
+    @Pattern(regexp = "[XO]", message = "Symbol must be either X or O")
+    private String symbol;
+
     public PlayerRequest() {
     }
 
@@ -35,5 +39,13 @@ public class PlayerRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 }

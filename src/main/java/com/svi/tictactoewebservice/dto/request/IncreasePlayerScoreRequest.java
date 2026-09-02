@@ -1,11 +1,10 @@
 package com.svi.tictactoewebservice.dto.request;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.json.bind.annotation.JsonbProperty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-public class ScoreRequest {
+public class IncreasePlayerScoreRequest {
 
     @NotBlank
     @Pattern(
@@ -15,11 +14,15 @@ public class ScoreRequest {
     @JsonbProperty("playerid")
     private String playerId;
 
-    @Min(value = 0, message = "Score cannot be negative.")
-    @JsonbProperty("score")
-    private int score;
+    @NotBlank(message = "Room code is required.")
+    @Pattern(
+            regexp = "^[A-Z0-9]+$",
+            message = "Room code must contain only uppercase letters and numbers."
+    )
+    @JsonbProperty("roomcode")
+    private String roomCode;
 
-    public ScoreRequest() {
+    public IncreasePlayerScoreRequest(){
     }
 
     public String getPlayerId() {
@@ -30,11 +33,11 @@ public class ScoreRequest {
         this.playerId = playerId;
     }
 
-    public int getScore() {
-        return score;
+    public String getRoomCode() {
+        return roomCode;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
     }
 }
