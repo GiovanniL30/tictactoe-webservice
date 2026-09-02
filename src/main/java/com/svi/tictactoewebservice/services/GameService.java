@@ -20,12 +20,12 @@ public class GameService {
     private GameFileRepository gameFileRepository;
 
     public void saveMove(SaveMoveRequest request) {
-        gameFileRepository.savePlayerGame(
+        gameFileRepository.savePlayerMoveOnTxt(
                 request.getPlayerId(),
                 request.getGameId()
         );
-
-        gameFileRepository.saveGameMove(request);
+        gameFileRepository.saveGameMoveOnTxt(request);
+        gameFileRepository.saveRoomOnTxt(request.getRoomCode(), request.getGameId());
     }
 
     public List<JsonObject> listPlayerGames(String playerId) {
@@ -46,37 +46,30 @@ public class GameService {
 
     public List<JsonObject> getGameIds() {
 
-        List<String> gameIds = gameFileRepository.getGameIds();
-
-        Map<String, List<String>> gamesByRoom = gameIds.stream()
-                .collect(Collectors.groupingBy(
-                        gameId -> gameId.substring(0, gameId.indexOf("_"))
-                ));
+        Map<String, List<String>> gamesByRoom =
+                gameFileRepository.getGamesByRoom();
 
         return gamesByRoom.entrySet()
                 .stream()
                 .map(entry -> {
 
                     String roomCode = entry.getKey();
-                    List<String> roomGames = entry.getValue();
+                    List<String> gameIds = entry.getValue();
 
-                    JsonArrayBuilder gamesBuilder = Json.createArrayBuilder();
+                    JsonArrayBuilder gamesBuilder =
+                            Json.createArrayBuilder();
 
-                    roomGames.forEach(gameId -> {
-                        String uuid = gameId.substring(
-                                gameId.indexOf("_") + 1
-                        );
+                    gameIds.forEach(gameId -> {
 
                         gamesBuilder.add(
                                 Json.createObjectBuilder()
-                                        .add("uuid", uuid)
                                         .add("gameid", gameId)
                         );
                     });
 
                     return Json.createObjectBuilder()
                             .add("roomcode", roomCode)
-                            .add("gamecount", roomGames.size())
+                            .add("gamecount", gameIds.size())
                             .add("games", gamesBuilder.build())
                             .build();
 

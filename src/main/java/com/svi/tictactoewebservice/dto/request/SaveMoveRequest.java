@@ -7,8 +7,8 @@ public class SaveMoveRequest {
 
     @NotBlank(message = "gameid is required.")
     @Pattern(
-            regexp = "^[A-Z0-9]+_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-            message = "Game ID must follow the format PREFIX_UUID."
+            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+            message = "Game ID must follow UUID format"
     )
     @JsonbProperty("gameid")
     private String gameId;
