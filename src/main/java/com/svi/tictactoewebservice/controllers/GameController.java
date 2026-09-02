@@ -30,6 +30,14 @@ public class GameController {
     }
 
     @GET
+    @Path("/v1/games")
+    public Response getAllGames() {
+        List<JsonObject> gameIds = gameService.getGameIds();
+
+        return Response.ok(new ListGameResponse(gameIds, "Records found")).build();
+    }
+
+    @GET
     @Path("/v1/game/{gameId}")
     public Response listGameMoves(@PathParam("gameId") String gameId) {
         List<JsonObject> gameMoves = gameService.listGameMoves(gameId);

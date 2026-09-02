@@ -116,6 +116,34 @@ public class GameFileRepository {
         }
     }
 
+    public List<String> getGameIds() {
+        try (Stream<Path> files = Files.list(getGameRecordsPath())) {
+            return files
+                    .filter(Files::isRegularFile)
+                    .filter(this::isGameFile)
+                    .map(this::getGameId)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to retrieve game records.", e);
+        }
+    }
+
+    private String getGameId(Path path) {
+        String fileName = path.getFileName().toString();
+
+        return fileName.substring(
+                0,
+                fileName.length() - ".txt".length()
+        );
+    }
+
+    private boolean isGameFile(Path path) {
+        return path.getFileName()
+                .toString()
+                .endsWith(".txt");
+    }
+
     private Path getGameRecordsPath() {
         return (Path) servletContext.getAttribute(GAME_RECORDS_PATH_ATTRIBUTE);
     }
