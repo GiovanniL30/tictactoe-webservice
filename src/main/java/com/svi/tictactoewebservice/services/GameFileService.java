@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class GameService {
+public class GameFileService {
 
     @Inject
     private GameFileRepository gameFileRepository;

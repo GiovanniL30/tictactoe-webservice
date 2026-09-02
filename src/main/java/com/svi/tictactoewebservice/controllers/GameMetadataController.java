@@ -6,7 +6,7 @@ import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.GetPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.IncreasePlayerScoreResponse;
 import com.svi.tictactoewebservice.models.PlayerData;
-import com.svi.tictactoewebservice.services.GameDataService;
+import com.svi.tictactoewebservice.services.GameMetadataService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -19,15 +19,15 @@ import java.util.List;
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class GameDataController {
+public class GameMetadataController {
 
     @Inject
-    private GameDataService gameDataService;
+    private GameMetadataService gameMetadataService;
 
     @GET
     @Path("/v1/data/players/{roomCode}")
     public Response getPlayers(@PathParam("roomCode") String roomCode) {
-        List<PlayerData> players = gameDataService.getPlayers(roomCode);
+        List<PlayerData> players = gameMetadataService.getPlayers(roomCode);
 
         return Response.ok(new GetPlayersResponse("Players found.", players)).build();
     }
@@ -44,7 +44,7 @@ public class GameDataController {
                     .build();
         }
 
-        PlayerData addedPlayer = gameDataService.addPlayer(roomCode, player);
+        PlayerData addedPlayer = gameMetadataService.addPlayer(roomCode, player);
 
         return Response.ok(new GetPlayersResponse("Player added.", Collections.singletonList(addedPlayer))).build();
     }
@@ -58,7 +58,7 @@ public class GameDataController {
                     .build();
         }
 
-        PlayerData playerData = gameDataService.increasePlayerScore(scoreRequest);
+        PlayerData playerData = gameMetadataService.increasePlayerScore(scoreRequest);
 
         return Response.ok(new IncreasePlayerScoreResponse("Player score increased successfully.", playerData)).build();
     }
@@ -67,7 +67,7 @@ public class GameDataController {
     @DELETE
     @Path("/v1/data/game/{roomCode}")
     public Response deleteGameData(@PathParam("roomCode") String roomCode) {
-        List<PlayerData> deletedPlayers = gameDataService.deleteRoom(roomCode);
+        List<PlayerData> deletedPlayers = gameMetadataService.deleteRoom(roomCode);
         return Response.ok(new GetPlayersResponse("Game data deleted.", deletedPlayers)).build();
     }
 }

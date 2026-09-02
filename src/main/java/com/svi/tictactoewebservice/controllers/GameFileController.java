@@ -3,7 +3,7 @@ package com.svi.tictactoewebservice.controllers;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.ListGameResponse;
-import com.svi.tictactoewebservice.services.GameService;
+import com.svi.tictactoewebservice.services.GameFileService;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -16,15 +16,15 @@ import java.util.List;
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class GameController {
+public class GameFileController {
 
     @Inject
-    private GameService gameService;
+    private GameFileService gameFileService;
 
     @GET
     @Path("/v1/list-games/{playerId}")
     public Response listGames(@PathParam("playerId") String playerId) {
-        List<JsonObject> playerGames = gameService.listPlayerGames(playerId);
+        List<JsonObject> playerGames = gameFileService.listPlayerGames(playerId);
 
         return Response.ok(new ListGameResponse(playerGames, "Records found")).build();
     }
@@ -32,7 +32,7 @@ public class GameController {
     @GET
     @Path("/v1/games")
     public Response getAllGames() {
-        List<JsonObject> gameIds = gameService.getGameIds();
+        List<JsonObject> gameIds = gameFileService.getGameIds();
 
         return Response.ok(new ListGameResponse(gameIds, "Records found")).build();
     }
@@ -40,7 +40,7 @@ public class GameController {
     @GET
     @Path("/v1/game/{gameId}")
     public Response listGameMoves(@PathParam("gameId") String gameId) {
-        List<JsonObject> gameMoves = gameService.listGameMoves(gameId);
+        List<JsonObject> gameMoves = gameFileService.listGameMoves(gameId);
 
         return Response.ok(new ListGameResponse(gameMoves, "Records found")).build();
     }
@@ -52,7 +52,7 @@ public class GameController {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ApiResponse("Request body is required.")).build();
         }
 
-        gameService.saveMove(saveMoveRequest);
+        gameFileService.saveMove(saveMoveRequest);
 
         return Response.ok(new ApiResponse("Record saved.")).build();
     }

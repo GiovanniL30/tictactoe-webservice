@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @ApplicationScoped
-public class GameDataRepository {
+public class GameMetadataRepository {
 
     // Room code : Players
     private final Map<String, List<PlayerData>> rooms = new HashMap<>();

@@ -5,41 +5,40 @@ import com.svi.tictactoewebservice.dto.request.PlayerRequest;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.models.PlayerData;
 import com.svi.tictactoewebservice.models.Symbol;
-import com.svi.tictactoewebservice.repositories.GameDataRepository;
+import com.svi.tictactoewebservice.repositories.GameMetadataRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class GameDataService {
+public class GameMetadataService {
 
     @Inject
-    private GameDataRepository gameDataRepository;
+    private GameMetadataRepository gameMetadataRepository;
 
     public PlayerData addPlayer(String roomCode, PlayerRequest player) {
-        return gameDataRepository.addPlayer(roomCode, new PlayerData(player.getPlayerId(), 0, 0, Symbol.fromString(player.getSymbol())));
+        return gameMetadataRepository.addPlayer(roomCode, new PlayerData(player.getPlayerId(), 0, 0, Symbol.fromString(player.getSymbol())));
     }
 
     public List<PlayerData> getPlayers(String roomCode) {
-        if(gameDataRepository.roomNotExists(roomCode)) {
+        if(gameMetadataRepository.roomNotExists(roomCode)) {
             throw new RecordNotFoundException(String.format("Room Code '%s' does not exist.", roomCode));
         }
 
-        return gameDataRepository.getPlayers(roomCode);
+        return gameMetadataRepository.getPlayers(roomCode);
     }
 
     public List<PlayerData> deleteRoom(String roomCode) {
-        if(gameDataRepository.roomNotExists(roomCode)) {
+        if(gameMetadataRepository.roomNotExists(roomCode)) {
             throw new RecordNotFoundException(String.format("Room Code '%s' does not exist.", roomCode));
         }
 
-        return gameDataRepository.removeRoom(roomCode);
+        return gameMetadataRepository.removeRoom(roomCode);
     }
 
     public PlayerData increasePlayerScore(IncreasePlayerScoreRequest playerScoreRequest) {
-        return gameDataRepository.increasePlayerScore(playerScoreRequest.getRoomCode(), playerScoreRequest.getPlayerId(), 1);
+        return gameMetadataRepository.increasePlayerScore(playerScoreRequest.getRoomCode(), playerScoreRequest.getPlayerId(), 1);
     }
 
 
