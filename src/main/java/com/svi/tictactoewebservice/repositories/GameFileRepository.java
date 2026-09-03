@@ -57,12 +57,13 @@ public class GameFileRepository {
 
     public List<JsonObject> listAllPlayers() {
         Path playersPath = getPlayerRecordsPath();
+        Map<String, List<String>> gamesByRoom = getGamesByRoom();
 
         try (Stream<Path> files = Files.list(playersPath)) {
             return files
                     .filter(Files::isRegularFile)
                     .filter(this::isTxtFile)
-                    .map(this::buildPlayerRecord)
+                    .map(playerFile -> buildPlayerRecord(playerFile, gamesByRoom))
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
@@ -213,29 +214,42 @@ public class GameFileRepository {
         }
     }
 
-    private JsonObject buildPlayerRecord(Path playerFile) {
+    private JsonObject buildPlayerRecord(Path playerFile, Map<String, List<String>> gamesByRoom) {
         String playerId = getFileNameWithoutExtension(playerFile);
 
-        List<String> games;
+        JsonArrayBuilder games = Json.createArrayBuilder();
 
         try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
-            games = lines
-                    .map(String::trim)
+            lines.map(String::trim)
                     .filter(line -> !line.isEmpty())
-                    .collect(Collectors.toList());
+                    .forEach(gameId -> {
+                        String roomCode = findRoomCode(gameId, gamesByRoom);
+
+                        games.add(
+                                Json.createObjectBuilder()
+                                        .add("gameid", gameId)
+                                        .add("roomcode", roomCode)
+                                        .build()
+                        );
+                    });
+
         } catch (IOException e) {
             throw new RuntimeException("Failed to read player record: " + playerId, e);
         }
 
         return Json.createObjectBuilder()
                 .add("playerid", playerId)
-                .add("games", games.stream()
-                        .collect(Json::createArrayBuilder,
-                                JsonArrayBuilder::add, (a, b) -> {
-                                })
-                        .build()
-                )
+                .add("games", games)
                 .build();
+    }
+
+    private String findRoomCode(String gameId, Map<String, List<String>> gamesByRoom) {
+        return gamesByRoom.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().contains(gameId))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
     private Path getGameRecordsPath() {
