@@ -4,6 +4,7 @@ import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
@@ -51,6 +52,21 @@ public class GameFileRepository {
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to retrieve player games.", e);
+        }
+    }
+
+    public List<JsonObject> listAllPlayers() {
+        Path playersPath = getPlayerRecordsPath();
+
+        try (Stream<Path> files = Files.list(playersPath)) {
+            return files
+                    .filter(Files::isRegularFile)
+                    .filter(this::isTxtFile)
+                    .map(this::buildPlayerRecord)
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to retrieve player records.", e);
         }
     }
 
@@ -195,6 +211,31 @@ public class GameFileRepository {
         } catch (IOException e) {
             throw new RuntimeException("Failed to check record.", e);
         }
+    }
+
+    private JsonObject buildPlayerRecord(Path playerFile) {
+        String playerId = getFileNameWithoutExtension(playerFile);
+
+        List<String> games;
+
+        try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
+            games = lines
+                    .map(String::trim)
+                    .filter(line -> !line.isEmpty())
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read player record: " + playerId, e);
+        }
+
+        return Json.createObjectBuilder()
+                .add("playerid", playerId)
+                .add("games", games.stream()
+                        .collect(Json::createArrayBuilder,
+                                JsonArrayBuilder::add, (a, b) -> {
+                                })
+                        .build()
+                )
+                .build();
     }
 
     private Path getGameRecordsPath() {

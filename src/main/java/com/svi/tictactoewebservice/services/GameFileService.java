@@ -103,5 +103,9 @@ public class GameFileService {
                 .collect(Collectors.toList());
     }
 
+    public List<JsonObject> getAllPlayers() {
+        return gameFileRepository.listAllPlayers();
+    }
+
 
 }
