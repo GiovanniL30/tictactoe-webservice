@@ -1,5 +1,7 @@
 package com.svi.tictactoewebservice.config;
 
+import com.svi.tictactoewebservice.utils.FileUtil;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -28,6 +30,8 @@ public class AppContextInitializer implements ServletContextListener {
             Files.createDirectories(gameRecordsPath);
             Files.createDirectories(playerRecordsPath);
             Files.createDirectories(roomsRecordsPath);
+
+            FileUtil.initialize(gameRecordsPath, playerRecordsPath, roomsRecordsPath);
 
             event.getServletContext().setAttribute(Config.Key.GAME_RECORDS_PATH.value(), gameRecordsPath);
 

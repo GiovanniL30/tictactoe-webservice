@@ -4,8 +4,10 @@ import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Move;
+import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.repositories.GameFileRepository;
 import com.svi.tictactoewebservice.services.interfaces.GameFileService;
+import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -33,10 +35,7 @@ public class GameFileServiceImpl implements GameFileService {
     @Override
     public void saveMove(SaveMoveRequest request) {
 
-        String[] gameIdParts = request.getGameId().split("_", 2);
-
-        String roomCode = gameIdParts[0];
-        String gameId = gameIdParts[1];
+        Room room = FileUtil.parseGameId(request.getGameId());
 
         List<Move> gameMoves = gameIdMoveCache.computeIfAbsent(request.getGameId(), key -> new ArrayList<>());
 
@@ -56,8 +55,8 @@ public class GameFileServiceImpl implements GameFileService {
         gameFileRepository.saveGameMoveOnTxt(request);
 
         gameFileRepository.saveRoomOnTxt(
-                roomCode,
-                gameId
+                room.getRoomCode(),
+                room.getGameId()
         );
 
         gameMoves.add(new Move(
@@ -66,18 +65,10 @@ public class GameFileServiceImpl implements GameFileService {
         ));
     }
 
-    @Override
-    public List<JsonObject> listPlayerGames(String playerId) {
-        if (gameFileRepository.playerNotExists(playerId)) {
-            throw new RecordNotFoundException("Record not found");
-        }
-
-        return gameFileRepository.getPlayerGames(playerId);
-    }
 
     @Override
     public List<JsonObject> listGameMoves(String playerId) {
-        if (gameFileRepository.gameNotExists(playerId)) {
+        if (FileUtil.gameNotExists(playerId)) {
             throw new RecordNotFoundException("Record not found");
         }
 
@@ -87,8 +78,7 @@ public class GameFileServiceImpl implements GameFileService {
     @Override
     public List<JsonObject> getGameIds() {
 
-        Map<String, List<String>> gamesByRoom =
-                gameFileRepository.getGamesByRoom();
+        Map<String, List<String>> gamesByRoom = FileUtil.getGamesByRoom();
 
         return gamesByRoom.entrySet()
                 .stream()
@@ -118,8 +108,5 @@ public class GameFileServiceImpl implements GameFileService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<JsonObject> getAllPlayers() {
-        return gameFileRepository.listAllPlayers();
-    }
+
 }

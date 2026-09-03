@@ -2,7 +2,6 @@ package com.svi.tictactoewebservice.controllers;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
-import com.svi.tictactoewebservice.dto.response.GetHistoryPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.ListGameResponse;
 import com.svi.tictactoewebservice.services.interfaces.GameFileService;
 
@@ -57,16 +56,5 @@ public class GameFileController {
 
         return Response.ok(new ListGameResponse(gameIds, "Records found")).build();
     }
-
-    @GET
-    @Path("/players")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAllPlayers() {
-        List<JsonObject> players = gameFileService.getAllPlayers();
-
-        return Response.ok(new GetHistoryPlayersResponse("Records found.", players)).build();
-    }
-
 
 }

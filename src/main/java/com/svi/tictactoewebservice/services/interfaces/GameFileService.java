@@ -9,11 +9,8 @@ public interface GameFileService {
 
     void saveMove(SaveMoveRequest request);
 
-    List<JsonObject> listPlayerGames(String playerId);
-
     List<JsonObject> listGameMoves(String playerId);
 
     List<JsonObject> getGameIds();
 
-    List<JsonObject> getAllPlayers();
 }
