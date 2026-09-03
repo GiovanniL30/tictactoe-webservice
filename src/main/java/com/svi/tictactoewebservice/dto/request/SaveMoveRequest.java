@@ -7,19 +7,11 @@ public class SaveMoveRequest {
 
     @NotBlank(message = "gameid is required.")
     @Pattern(
-            regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-            message = "Game ID must follow UUID format"
+            regexp = "^[A-Z0-9]+_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+            message = "Game ID must follow the format roomCode_UUID"
     )
     @JsonbProperty("gameid")
     private String gameId;
-
-    @NotBlank(message = "roomcode is required.")
-    @Pattern(
-            regexp = "^[A-Z0-9]+$",
-            message = "Room code must contain only uppercase letters and numbers."
-    )
-    @JsonbProperty("roomcode")
-    private String roomCode;
 
     @NotBlank
     @Pattern(regexp = "[XO]", message = "Symbol must be either X or O")
@@ -86,11 +78,4 @@ public class SaveMoveRequest {
         this.datetime = datetime;
     }
 
-    public String getRoomCode() {
-        return roomCode;
-    }
-
-    public void setRoomCode(String roomCode) {
-        this.roomCode = roomCode;
-    }
 }
