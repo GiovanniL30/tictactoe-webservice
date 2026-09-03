@@ -1,9 +1,9 @@
 package com.svi.tictactoewebservice.repositories;
 
+import com.svi.tictactoewebservice.constants.Symbol;
 import com.svi.tictactoewebservice.exceptions.*;
-import com.svi.tictactoewebservice.models.GameKey;
+import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.PlayerData;
-import com.svi.tictactoewebservice.models.Symbol;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.security.SecureRandom;
@@ -19,6 +19,7 @@ public class GameMetadataRepository {
 
     // Room code : Current Game UUID
     private final Map<String, String> gameUUIDs = new HashMap<>();
+
 
     public PlayerData addPlayer(String roomCode, PlayerData player) {
         validateRoomNotFull(roomCode);
@@ -103,12 +104,12 @@ public class GameMetadataRepository {
                 || !rooms.containsKey(roomCode);
     }
 
-    public GameKey generateRoomKeys() {
+    public Room generateRoomKeys() {
         String roomCode = generateRoomCode();
 
         String gameId = gameUUIDs.computeIfAbsent(roomCode, key -> UUID.randomUUID().toString());
 
-        return new GameKey(roomCode, gameId);
+        return new Room(roomCode, gameId);
     }
 
     public String getRoomUUID(String roomCode) {

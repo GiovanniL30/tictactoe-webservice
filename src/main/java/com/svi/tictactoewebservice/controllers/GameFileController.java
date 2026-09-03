@@ -4,7 +4,7 @@ import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.GetHistoryPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.ListGameResponse;
-import com.svi.tictactoewebservice.services.GameFileService;
+import com.svi.tictactoewebservice.services.interfaces.GameFileService;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -14,48 +14,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Path("/game")
 public class GameFileController {
 
+    private final GameFileService gameFileService;
+
     @Inject
-    private GameFileService gameFileService;
-
-    @GET
-    @Path("/v1/list-games/{playerId}")
-    public Response listGames(@PathParam("playerId") String playerId) {
-        List<JsonObject> playerGames = gameFileService.listPlayerGames(playerId);
-
-        return Response.ok(new ListGameResponse(playerGames, "Records found")).build();
-    }
-
-    @GET
-    @Path("/v1/games")
-    public Response getAllGames() {
-        List<JsonObject> gameIds = gameFileService.getGameIds();
-
-        return Response.ok(new ListGameResponse(gameIds, "Records found")).build();
-    }
-
-    @GET
-    @Path("/v1/game/players")
-    public Response getAllPlayers() {
-        List<JsonObject> players = gameFileService.getAllPlayers();
-
-        return Response.ok(new GetHistoryPlayersResponse("Records found.", players)).build();
-    }
-
-    @GET
-    @Path("/v1/game/{gameId}")
-    public Response listGameMoves(@PathParam("gameId") String gameId) {
-        List<JsonObject> gameMoves = gameFileService.listGameMoves(gameId);
-
-        return Response.ok(new ListGameResponse(gameMoves, "Records found")).build();
+    public GameFileController(GameFileService gameFileService) {
+        this.gameFileService = gameFileService;
     }
 
     @POST
-    @Path("/v1/game/save")
+    @Path("/save")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response saveGameData(@Valid SaveMoveRequest saveMoveRequest) {
         if (saveMoveRequest == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(new ApiResponse("Request body is required.")).build();
@@ -65,5 +37,36 @@ public class GameFileController {
 
         return Response.ok(new ApiResponse("Record saved.")).build();
     }
+
+    @GET
+    @Path("/{gameId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response listGameMoves(@PathParam("gameId") String gameId) {
+        List<JsonObject> gameMoves = gameFileService.listGameMoves(gameId);
+
+        return Response.ok(new ListGameResponse(gameMoves, "Records found")).build();
+    }
+
+    @GET
+    @Path("/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllGames() {
+        List<JsonObject> gameIds = gameFileService.getGameIds();
+
+        return Response.ok(new ListGameResponse(gameIds, "Records found")).build();
+    }
+
+    @GET
+    @Path("/players")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getAllPlayers() {
+        List<JsonObject> players = gameFileService.getAllPlayers();
+
+        return Response.ok(new GetHistoryPlayersResponse("Records found.", players)).build();
+    }
+
 
 }

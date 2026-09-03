@@ -6,9 +6,9 @@ import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.GameKeyResponse;
 import com.svi.tictactoewebservice.dto.response.GetPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.IncreasePlayerScoreResponse;
-import com.svi.tictactoewebservice.models.GameKey;
+import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.PlayerData;
-import com.svi.tictactoewebservice.services.GameMetadataService;
+import com.svi.tictactoewebservice.services.interfaces.GameMetadataService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -18,16 +18,20 @@ import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
 
-@Path("")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@Path("/data")
 public class GameMetadataController {
 
+    private final GameMetadataService gameMetadataService;
+
     @Inject
-    private GameMetadataService gameMetadataService;
+    public GameMetadataController(GameMetadataService gameMetadataService) {
+        this.gameMetadataService = gameMetadataService;
+    }
 
     @GET
-    @Path("/v1/data/players/{roomCode}")
+    @Path("/players/{roomCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response getPlayers(@PathParam("roomCode") String roomCode) {
         List<PlayerData> players = gameMetadataService.getPlayers(roomCode);
 
@@ -35,26 +39,29 @@ public class GameMetadataController {
     }
 
     @GET
-    @Path("/v1/data/game-key/generate")
+    @Path("/game-key/generate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response generateRoomKeys() {
-        GameKey gameKey = gameMetadataService.generateRoomKeys();
-        return Response.ok(new GameKeyResponse("Generated Room Keys.", gameKey)).build();
+        Room room = gameMetadataService.generateRoomKeys();
+        return Response.ok(new GameKeyResponse("Generated Room Keys.", room)).build();
     }
 
     @GET
-    @Path("/v1/data/game-key/{roomCode}")
+    @Path("/game-key/{roomCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response getRoomUUID(@PathParam("roomCode") String roomCode) {
         String gameRoomUUID = gameMetadataService.getRoomUUID(roomCode);
-        return Response.ok(new GameKeyResponse("Room Keys", new GameKey(roomCode, gameRoomUUID))).build();
+        return Response.ok(new GameKeyResponse("Room Keys", new Room(roomCode, gameRoomUUID))).build();
     }
 
 
     @POST
-    @Path("/v1/data/player/{roomCode}")
-    public Response addPlayer(
-            @PathParam("roomCode") String roomCode,
-            @Valid PlayerRequest player
-    ) {
+    @Path("/player/{roomCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addPlayer(@PathParam("roomCode") String roomCode, @Valid PlayerRequest player) {
         if (player == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ApiResponse("Request body is required."))
@@ -67,7 +74,9 @@ public class GameMetadataController {
     }
 
     @PATCH
-    @Path("/v1/data/player-score/increase")
+    @Path("/player-score/increase")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response increasePlayerScore(@Valid IncreasePlayerScoreRequest scoreRequest) {
         if (scoreRequest == null) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -82,16 +91,20 @@ public class GameMetadataController {
 
 
     @DELETE
-    @Path("/v1/data/game/{roomCode}")
+    @Path("/game/{roomCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteGameData(@PathParam("roomCode") String roomCode) {
         List<PlayerData> deletedPlayers = gameMetadataService.deleteRoom(roomCode);
         return Response.ok(new GetPlayersResponse("Game data deleted.", deletedPlayers)).build();
     }
 
     @PATCH
-    @Path("/v1/data/game-key/regenerate/{roomCode}")
+    @Path("/game-key/regenerate/{roomCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response regenerateGameUUID(@PathParam("roomCode") String roomCode) {
         String newGameUUID = gameMetadataService.removeGameUUID(roomCode);
-        return Response.ok(new GameKeyResponse("Game UUID regenerated.", new GameKey(roomCode, newGameUUID))).build();
+        return Response.ok(new GameKeyResponse("Game UUID regenerated.", new Room(roomCode, newGameUUID))).build();
     }
 }
