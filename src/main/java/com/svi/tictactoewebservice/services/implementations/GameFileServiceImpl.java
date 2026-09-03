@@ -49,7 +49,7 @@ public class GameFileServiceImpl implements GameFileService {
 
         gameFileRepository.savePlayerMoveOnTxt(
                 request.getPlayerId(),
-                request.getGameId()
+                room.getGameId()
         );
 
         gameFileRepository.saveGameMoveOnTxt(request);
