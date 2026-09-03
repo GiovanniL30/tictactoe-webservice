@@ -32,6 +32,12 @@ public class GameFileServiceImpl implements GameFileService {
 
     @Override
     public void saveMove(SaveMoveRequest request) {
+
+        String[] gameIdParts = request.getGameId().split("_", 2);
+
+        String roomCode = gameIdParts[0];
+        String gameId = gameIdParts[1];
+
         List<Move> gameMoves = gameIdMoveCache.computeIfAbsent(request.getGameId(), key -> new ArrayList<>());
 
         boolean positionTaken = gameMoves
@@ -50,8 +56,8 @@ public class GameFileServiceImpl implements GameFileService {
         gameFileRepository.saveGameMoveOnTxt(request);
 
         gameFileRepository.saveRoomOnTxt(
-                request.getRoomCode(),
-                request.getGameId()
+                roomCode,
+                gameId
         );
 
         gameMoves.add(new Move(
