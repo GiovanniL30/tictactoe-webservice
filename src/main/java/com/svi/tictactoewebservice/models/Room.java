@@ -1,12 +1,12 @@
 package com.svi.tictactoewebservice.models;
 
-public class GameKey {
+public class Room {
 
     private final String roomCode;
 
     private final String gameId;
 
-    public GameKey(String roomCode, String gameId) {
+    public Room(String roomCode, String gameId) {
         this.roomCode = roomCode;
         this.gameId = gameId;
     }

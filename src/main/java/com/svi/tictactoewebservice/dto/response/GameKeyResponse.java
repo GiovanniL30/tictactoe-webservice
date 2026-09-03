@@ -1,17 +1,17 @@
 package com.svi.tictactoewebservice.dto.response;
 
-import com.svi.tictactoewebservice.models.GameKey;
+import com.svi.tictactoewebservice.models.Room;
 
 public class GameKeyResponse extends ApiResponse{
 
-    private final GameKey gameKey;
+    private final Room room;
 
-    public GameKeyResponse(String msg, GameKey gameKey) {
+    public GameKeyResponse(String msg, Room room) {
         super(msg);
-        this.gameKey = gameKey;
+        this.room = room;
     }
 
-    public GameKey getGameKey() {
-        return gameKey;
+    public Room getGameKey() {
+        return room;
     }
 }

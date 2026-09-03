@@ -3,18 +3,12 @@ package com.svi.tictactoewebservice.config;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 @WebListener
 public class AppContextInitializer implements ServletContextListener {
-
-    private static final String GAME_RECORDS_PATH = "gameRecordsPath";
-    private static final String PLAYER_RECORDS_PATH = "playerRecordsPath";
-    private static final String ROOMS_RECORDS_PATH = "roomsRecordsPath";
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -25,21 +19,21 @@ public class AppContextInitializer implements ServletContextListener {
 
             Path projectPath = applicationPath.getParent().getParent();
 
-            Path recordsPath = projectPath.resolve("records");
+            Path gameRecordsPath = projectPath.resolve(Config.get(Config.Key.GAME_RECORDS_PATH.value()));
 
-            Path gameRecordsPath = recordsPath.resolve("games");
-            Path playerRecordsPath = recordsPath.resolve("players");
-            Path roomsRecordsPath = recordsPath.resolve("rooms");
+            Path playerRecordsPath = projectPath.resolve(Config.get(Config.Key.PLAYER_RECORDS_PATH.value()));
+
+            Path roomsRecordsPath = projectPath.resolve(Config.get(Config.Key.ROOMS_RECORDS_PATH.value()));
 
             Files.createDirectories(gameRecordsPath);
             Files.createDirectories(playerRecordsPath);
             Files.createDirectories(roomsRecordsPath);
 
-            event.getServletContext().setAttribute(GAME_RECORDS_PATH, gameRecordsPath);
+            event.getServletContext().setAttribute(Config.Key.GAME_RECORDS_PATH.value(), gameRecordsPath);
 
-            event.getServletContext().setAttribute(PLAYER_RECORDS_PATH, playerRecordsPath);
+            event.getServletContext().setAttribute(Config.Key.PLAYER_RECORDS_PATH.value(), playerRecordsPath);
 
-            event.getServletContext().setAttribute(ROOMS_RECORDS_PATH, roomsRecordsPath);
+            event.getServletContext().setAttribute(Config.Key.ROOMS_RECORDS_PATH.value(), roomsRecordsPath);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize records directories.", e);

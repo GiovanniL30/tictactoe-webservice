@@ -1,10 +1,11 @@
-package com.svi.tictactoewebservice.services;
+package com.svi.tictactoewebservice.services.implementations;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Move;
 import com.svi.tictactoewebservice.repositories.GameFileRepository;
+import com.svi.tictactoewebservice.services.interfaces.GameFileService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,13 +19,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class GameFileService {
+public class GameFileServiceImpl implements GameFileService {
 
     private final Map<String, List<Move>> gameIdMoveCache = new HashMap<>();
 
-    @Inject
-    private GameFileRepository gameFileRepository;
+    private final GameFileRepository gameFileRepository;
 
+    @Inject
+    public GameFileServiceImpl(GameFileRepository gameFileRepository) {
+        this.gameFileRepository = gameFileRepository;
+    }
+
+    @Override
     public void saveMove(SaveMoveRequest request) {
         List<Move> gameMoves = gameIdMoveCache.computeIfAbsent(request.getGameId(), key -> new ArrayList<>());
 
@@ -54,6 +60,7 @@ public class GameFileService {
         ));
     }
 
+    @Override
     public List<JsonObject> listPlayerGames(String playerId) {
         if (gameFileRepository.playerNotExists(playerId)) {
             throw new RecordNotFoundException("Record not found");
@@ -62,6 +69,7 @@ public class GameFileService {
         return gameFileRepository.getPlayerGames(playerId);
     }
 
+    @Override
     public List<JsonObject> listGameMoves(String playerId) {
         if (gameFileRepository.gameNotExists(playerId)) {
             throw new RecordNotFoundException("Record not found");
@@ -70,6 +78,7 @@ public class GameFileService {
         return gameFileRepository.getGameMoves(playerId);
     }
 
+    @Override
     public List<JsonObject> getGameIds() {
 
         Map<String, List<String>> gamesByRoom =
@@ -103,9 +112,8 @@ public class GameFileService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<JsonObject> getAllPlayers() {
         return gameFileRepository.listAllPlayers();
     }
-
-
 }

@@ -1,4 +1,4 @@
-package com.svi.tictactoewebservice.models;
+package com.svi.tictactoewebservice.constants;
 
 public enum Symbol {
     X, O;

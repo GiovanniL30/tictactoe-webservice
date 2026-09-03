@@ -1,5 +1,7 @@
 package com.svi.tictactoewebservice.models;
 
+import com.svi.tictactoewebservice.constants.Symbol;
+
 public class PlayerData {
 
     private String playerId;

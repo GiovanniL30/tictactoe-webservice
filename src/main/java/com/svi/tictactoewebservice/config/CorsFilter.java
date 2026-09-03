@@ -7,6 +7,7 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Provider
 @Priority(Priorities.HEADER_DECORATOR)
@@ -17,7 +18,9 @@ public class CorsFilter implements ContainerResponseFilter {
 
         String origin = requestContext.getHeaderString("Origin");
 
-        if ("http://127.0.0.1:5500".equals(origin) || "http://localhost:5500".equals(origin)) {
+        String allowedOrigins = Config.get(Config.Key.ALLOWED_ORIGINS.value());
+
+        if (Arrays.asList(allowedOrigins.split(",")).contains(origin)) {
             responseContext.getHeaders().add("Access-Control-Allow-Origin", origin);
         }
 

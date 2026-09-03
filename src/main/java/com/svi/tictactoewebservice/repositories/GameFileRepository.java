@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.repositories;
 
+import com.svi.tictactoewebservice.config.Config;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -20,10 +21,6 @@ import java.util.stream.Stream;
 
 @ApplicationScoped
 public class GameFileRepository {
-
-    private static final String GAME_RECORDS_PATH_ATTRIBUTE = "gameRecordsPath";
-    private static final String PLAYER_RECORDS_PATH_ATTRIBUTE = "playerRecordsPath";
-    private static final String ROOM_RECORDS_PATH_ATTRIBUTE = "roomsRecordsPath";
 
     @Context
     private ServletContext servletContext;
@@ -56,10 +53,9 @@ public class GameFileRepository {
     }
 
     public List<JsonObject> listAllPlayers() {
-        Path playersPath = getPlayerRecordsPath();
         Map<String, List<String>> gamesByRoom = getGamesByRoom();
 
-        try (Stream<Path> files = Files.list(playersPath)) {
+        try (Stream<Path> files = Files.list(getPlayerRecordsPath())) {
             return files
                     .filter(Files::isRegularFile)
                     .filter(this::isTxtFile)
@@ -97,6 +93,7 @@ public class GameFileRepository {
         Path playerFile = getPlayerRecordsPath().resolve(playerId + ".txt");
 
         try {
+
             if (playerNotExists(playerId)) {
                 Files.write(playerFile,
                         (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),
@@ -253,14 +250,14 @@ public class GameFileRepository {
     }
 
     private Path getGameRecordsPath() {
-        return (Path) servletContext.getAttribute(GAME_RECORDS_PATH_ATTRIBUTE);
-    }
-
-    private Path getRoomRecordsPath() {
-        return (Path) servletContext.getAttribute(ROOM_RECORDS_PATH_ATTRIBUTE);
+        return (Path) servletContext.getAttribute(Config.Key.GAME_RECORDS_PATH.value());
     }
 
     private Path getPlayerRecordsPath() {
-        return (Path) servletContext.getAttribute(PLAYER_RECORDS_PATH_ATTRIBUTE);
+        return (Path) servletContext.getAttribute(Config.Key.PLAYER_RECORDS_PATH.value());
+    }
+
+    private Path getRoomRecordsPath() {
+        return (Path) servletContext.getAttribute(Config.Key.ROOMS_RECORDS_PATH.value());
     }
 }
