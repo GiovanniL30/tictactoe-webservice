@@ -47,22 +47,27 @@ public class GameFileServiceImpl implements GameFileService {
             throw new SymbolAlreadyTakenException("Failed to place move, position is already taken");
         }
 
-        gameFileRepository.savePlayerMoveOnTxt(
-                request.getPlayerId(),
-                room.getGameId()
-        );
+        try {
+            gameFileRepository.savePlayerMoveOnTxt(
+                    request.getPlayerId(),
+                    room.getGameId()
+            );
 
-        gameFileRepository.saveGameMoveOnTxt(request);
+            gameFileRepository.saveGameMoveOnTxt(request);
 
-        gameFileRepository.saveRoomOnTxt(
-                room.getRoomCode(),
-                room.getGameId()
-        );
+            gameFileRepository.saveRoomOnTxt(
+                    room.getRoomCode(),
+                    room.getGameId()
+            );
 
-        gameMoves.add(new Move(
-                request.getPlayerId(),
-                request.getLocation()
-        ));
+            gameMoves.add(new Move(
+                    request.getPlayerId(),
+                    request.getLocation()
+            ));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

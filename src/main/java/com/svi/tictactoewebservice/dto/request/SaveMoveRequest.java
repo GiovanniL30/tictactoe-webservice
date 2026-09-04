@@ -18,8 +18,8 @@ public class SaveMoveRequest {
     private String symbol;
 
     @NotNull
-    @Min(value = 0, message = "Location must be between 0 and 9.")
-    @Max(value = 9, message = "Location must be between 0 and 9.")
+    @Min(value = 0, message = "Location must be between 0 and 8.")
+    @Max(value = 8, message = "Location must be between 0 and 8.")
     private Integer location;
 
     @NotBlank(message = "Player ID is required.")
