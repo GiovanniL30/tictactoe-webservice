@@ -28,7 +28,7 @@ public class GameFileRepository {
                     .filter(parts -> parts.length == 5)
                     .map(parts ->
                             Json.createObjectBuilder()
-                                    .add("id", parts[0])
+                                    .add("gameid", parts[0])
                                     .add("playerid", parts[1])
                                     .add("symbol", parts[2])
                                     .add("location", parts[3])
