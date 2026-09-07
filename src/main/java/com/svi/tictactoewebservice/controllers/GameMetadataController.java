@@ -8,7 +8,7 @@ import com.svi.tictactoewebservice.dto.response.GetPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.IncreasePlayerScoreResponse;
 import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.PlayerData;
-import com.svi.tictactoewebservice.services.interfaces.GameMetadataService;
+import com.svi.tictactoewebservice.services.GameMetadataService;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -31,7 +31,6 @@ public class GameMetadataController {
     @GET
     @Path("/players/{roomCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response getPlayers(@PathParam("roomCode") String roomCode) {
         List<PlayerData> players = gameMetadataService.getPlayers(roomCode);
 
@@ -41,7 +40,6 @@ public class GameMetadataController {
     @GET
     @Path("/game-key/generate")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response generateRoomKeys() {
         Room room = gameMetadataService.generateRoomKeys();
         return Response.ok(new GameKeyResponse("Generated Room Keys.", room)).build();
@@ -50,7 +48,6 @@ public class GameMetadataController {
     @GET
     @Path("/game-key/{roomCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response getRoomUUID(@PathParam("roomCode") String roomCode) {
         String gameRoomUUID = gameMetadataService.getRoomUUID(roomCode);
         return Response.ok(new GameKeyResponse("Room Keys", new Room(roomCode, gameRoomUUID))).build();
@@ -62,12 +59,6 @@ public class GameMetadataController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addPlayer(@PathParam("roomCode") String roomCode, @Valid PlayerRequest player) {
-        if (player == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ApiResponse("Request body is required."))
-                    .build();
-        }
-
         PlayerData addedPlayer = gameMetadataService.addPlayer(roomCode, player);
 
         return Response.ok(new GetPlayersResponse("Player added.", Collections.singletonList(addedPlayer))).build();
@@ -78,12 +69,6 @@ public class GameMetadataController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response increasePlayerScore(@Valid IncreasePlayerScoreRequest scoreRequest) {
-        if (scoreRequest == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(new ApiResponse("Request body is required."))
-                    .build();
-        }
-
         PlayerData playerData = gameMetadataService.increasePlayerScore(scoreRequest);
 
         return Response.ok(new IncreasePlayerScoreResponse("Player score increased successfully.", playerData)).build();

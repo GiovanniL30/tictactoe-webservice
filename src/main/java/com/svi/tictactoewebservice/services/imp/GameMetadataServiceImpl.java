@@ -1,13 +1,13 @@
-package com.svi.tictactoewebservice.services.implementations;
+package com.svi.tictactoewebservice.services.imp;
 
 import com.svi.tictactoewebservice.constants.Symbol;
 import com.svi.tictactoewebservice.dto.request.IncreasePlayerScoreRequest;
 import com.svi.tictactoewebservice.dto.request.PlayerRequest;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
-import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.PlayerData;
+import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.repositories.GameMetadataRepository;
-import com.svi.tictactoewebservice.services.interfaces.GameMetadataService;
+import com.svi.tictactoewebservice.services.GameMetadataService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

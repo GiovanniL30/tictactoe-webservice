@@ -1,4 +1,4 @@
-package com.svi.tictactoewebservice.services.interfaces;
+package com.svi.tictactoewebservice.services;
 
 import com.svi.tictactoewebservice.dto.request.IncreasePlayerScoreRequest;
 import com.svi.tictactoewebservice.dto.request.PlayerRequest;
