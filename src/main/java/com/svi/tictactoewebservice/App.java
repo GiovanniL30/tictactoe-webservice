@@ -3,7 +3,7 @@ package com.svi.tictactoewebservice;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("/api")
+@ApplicationPath("/rest")
 public class App extends Application {
 
 }
