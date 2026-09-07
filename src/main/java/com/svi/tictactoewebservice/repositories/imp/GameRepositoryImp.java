@@ -1,7 +1,8 @@
-package com.svi.tictactoewebservice.repositories;
+package com.svi.tictactoewebservice.repositories.imp;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.models.Room;
+import com.svi.tictactoewebservice.repositories.GameRepository;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,8 +18,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class GameFileRepository {
+public class GameRepositoryImp implements GameRepository {
 
+    @Override
     public List<JsonObject> getGameMoves(String gameId) {
         Path gameFile = FileUtil.getGameRecordsPath().resolve(gameId + ".txt");
 
@@ -41,6 +43,7 @@ public class GameFileRepository {
         }
     }
 
+    @Override
     public void savePlayerMoveOnTxt(String playerId, String gameId) {
         Path playerFile = FileUtil.getPlayerRecordsPath().resolve(playerId + ".txt");
 
@@ -67,6 +70,7 @@ public class GameFileRepository {
         }
     }
 
+    @Override
     public void saveGameMoveOnTxt(SaveMoveRequest request) {
         Room room = FileUtil.parseGameId(request.getGameId());
 
@@ -82,6 +86,7 @@ public class GameFileRepository {
         }
     }
 
+    @Override
     public void saveRoomOnTxt(String roomCode, String gameId) {
         Path roomFile = FileUtil.getRoomRecordsPath().resolve(roomCode + ".txt");
 

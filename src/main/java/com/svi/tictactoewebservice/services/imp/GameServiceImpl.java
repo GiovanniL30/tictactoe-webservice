@@ -1,12 +1,12 @@
-package com.svi.tictactoewebservice.services.implementations;
+package com.svi.tictactoewebservice.services.imp;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Move;
 import com.svi.tictactoewebservice.models.Room;
-import com.svi.tictactoewebservice.repositories.GameFileRepository;
-import com.svi.tictactoewebservice.services.interfaces.GameFileService;
+import com.svi.tictactoewebservice.repositories.GameRepository;
+import com.svi.tictactoewebservice.services.GameService;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,21 +15,21 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class GameFileServiceImpl implements GameFileService {
+public class GameServiceImpl implements GameService {
 
-    private final Map<String, List<Move>> gameIdMoveCache = new HashMap<>();
+    private final Map<String, List<Move>> gameIdMoveCache = new ConcurrentHashMap<>();
 
-    private final GameFileRepository gameFileRepository;
+    private final GameRepository gameRepository;
 
     @Inject
-    public GameFileServiceImpl(GameFileRepository gameFileRepository) {
-        this.gameFileRepository = gameFileRepository;
+    public GameServiceImpl(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
 
     @Override
@@ -48,14 +48,14 @@ public class GameFileServiceImpl implements GameFileService {
         }
 
         try {
-            gameFileRepository.savePlayerMoveOnTxt(
+            gameRepository.savePlayerMoveOnTxt(
                     request.getPlayerId(),
                     room.getGameId()
             );
 
-            gameFileRepository.saveGameMoveOnTxt(request);
+            gameRepository.saveGameMoveOnTxt(request);
 
-            gameFileRepository.saveRoomOnTxt(
+            gameRepository.saveRoomOnTxt(
                     room.getRoomCode(),
                     room.getGameId()
             );
@@ -64,7 +64,7 @@ public class GameFileServiceImpl implements GameFileService {
                     request.getPlayerId(),
                     request.getLocation()
             ));
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
 
@@ -77,7 +77,7 @@ public class GameFileServiceImpl implements GameFileService {
             throw new RecordNotFoundException("Record not found");
         }
 
-        return gameFileRepository.getGameMoves(playerId);
+        return gameRepository.getGameMoves(playerId);
     }
 
     @Override

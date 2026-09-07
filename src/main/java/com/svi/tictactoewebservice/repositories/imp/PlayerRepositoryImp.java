@@ -1,5 +1,6 @@
-package com.svi.tictactoewebservice.repositories;
+package com.svi.tictactoewebservice.repositories.imp;
 
+import com.svi.tictactoewebservice.repositories.PlayerRepository;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,8 +17,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class PlayerFileRepository {
+public class PlayerRepositoryImp implements PlayerRepository {
 
+    @Override
     public List<JsonObject> getPlayerGames(String playerId) {
         Path playerFile = FileUtil.getPlayerRecordsPath().resolve(playerId + ".txt");
 
@@ -33,6 +35,7 @@ public class PlayerFileRepository {
         }
     }
 
+    @Override
     public List<JsonObject> listAllPlayers() {
         Map<String, List<String>> gamesByRoom = FileUtil.getGamesByRoom();
 

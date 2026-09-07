@@ -1,9 +1,9 @@
-package com.svi.tictactoewebservice.services.interfaces;
+package com.svi.tictactoewebservice.services;
 
 import javax.json.JsonObject;
 import java.util.List;
 
-public interface PlayerFileService {
+public interface PlayerService {
     List<JsonObject> listPlayerGames(String playerId);
 
     List<JsonObject> getAllPlayers();

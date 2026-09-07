@@ -1,11 +1,11 @@
-package com.svi.tictactoewebservice.services.interfaces;
+package com.svi.tictactoewebservice.services;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 
 import javax.json.JsonObject;
 import java.util.List;
 
-public interface GameFileService {
+public interface GameService {
 
     void saveMove(SaveMoveRequest request);
 
