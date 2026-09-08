@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.repositories.imp;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.repositories.GameRepository;
@@ -39,7 +40,7 @@ public class GameRepositoryImp implements GameRepository {
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to retrieve game moves.", e);
+            throw new RuntimeException(ErrorMessages.GAME_MOVES_RETRIEVAL_FAILED, e);
         }
     }
 
@@ -66,7 +67,7 @@ public class GameRepositoryImp implements GameRepository {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save player game record.", e);
+            throw new RuntimeException(ErrorMessages.PLAYER_GAME_SAVE_FAILED, e);
         }
     }
 
@@ -82,7 +83,7 @@ public class GameRepositoryImp implements GameRepository {
             Files.write(gameFile, (record + System.lineSeparator()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save game move record.", e);
+            throw new RuntimeException(ErrorMessages.GAME_MOVE_SAVE_FAILED, e);
         }
     }
 
@@ -110,7 +111,7 @@ public class GameRepositoryImp implements GameRepository {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to save room game record.", e);
+            throw new RuntimeException(ErrorMessages.ROOM_GAME_SAVE_FAILED, e);
         }
     }
 

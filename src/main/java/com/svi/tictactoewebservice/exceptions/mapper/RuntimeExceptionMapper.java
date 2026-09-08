@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.exceptions.mapper;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
 
 import javax.validation.ConstraintViolationException;
@@ -18,7 +19,7 @@ public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>
         return Response
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
                 .type(MediaType.APPLICATION_JSON)
-                .entity(new ApiResponse(String.format("The server ran into an unexpected exception. : %s", exception.getMessage())))
+                .entity(new ApiResponse(ErrorMessages.format(ErrorMessages.UNEXPECTED_SERVER_ERROR, exception.getMessage())))
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.services.imp;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.constants.Symbol;
 import com.svi.tictactoewebservice.dto.request.IncreasePlayerScoreRequest;
 import com.svi.tictactoewebservice.dto.request.PlayerRequest;
@@ -31,7 +32,7 @@ public class GameMetadataServiceImpl implements GameMetadataService {
     @Override
     public List<PlayerData> getPlayers(String roomCode) {
         if (gameMetadataRepository.roomNotExists(roomCode)) {
-            throw new RecordNotFoundException(String.format("Room Code '%s' does not exist.", roomCode));
+            throw new RecordNotFoundException(ErrorMessages.format(ErrorMessages.ROOM_NOT_FOUND_WITH_CODE, roomCode));
         }
 
         return gameMetadataRepository.getPlayers(roomCode);
@@ -40,7 +41,7 @@ public class GameMetadataServiceImpl implements GameMetadataService {
     @Override
     public List<PlayerData> deleteRoom(String roomCode) {
         if (gameMetadataRepository.roomNotExists(roomCode)) {
-            throw new RecordNotFoundException(String.format("Room Code '%s' does not exist.", roomCode));
+            throw new RecordNotFoundException(ErrorMessages.format(ErrorMessages.ROOM_NOT_FOUND_WITH_CODE, roomCode));
         }
 
         return gameMetadataRepository.removeRoom(roomCode);
@@ -64,7 +65,7 @@ public class GameMetadataServiceImpl implements GameMetadataService {
     @Override
     public String removeGameUUID(String roomCode) {
         if (gameMetadataRepository.roomNotExists(roomCode)) {
-            throw new RecordNotFoundException(String.format("Room Code '%s' does not exist.", roomCode));
+            throw new RecordNotFoundException(ErrorMessages.format(ErrorMessages.ROOM_NOT_FOUND_WITH_CODE, roomCode));
         }
 
         return gameMetadataRepository.regenerateGameUUID(roomCode);

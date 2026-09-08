@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.config;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.servlet.ServletContextEvent;
@@ -40,7 +41,7 @@ public class AppContextInitializer implements ServletContextListener {
             event.getServletContext().setAttribute(Config.Key.ROOMS_RECORDS_PATH.value(), roomsRecordsPath);
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize records directories.", e);
+            throw new RuntimeException(ErrorMessages.RECORDS_DIRECTORY_INITIALIZATION_FAILED, e);
         }
     }
 

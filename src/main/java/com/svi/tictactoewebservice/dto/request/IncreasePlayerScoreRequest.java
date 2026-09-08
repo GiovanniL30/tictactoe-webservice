@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.dto.request;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -7,15 +8,15 @@ import javax.validation.constraints.Size;
 
 public class IncreasePlayerScoreRequest {
 
-    @NotBlank(message = "Player ID is required.")
-    @Size(min = 3, max = 7, message = "Player ID must be between 3 and 7 characters.")
+    @NotBlank(message = ErrorMessages.PLAYER_ID_REQUIRED)
+    @Size(min = 3, max = 7, message = ErrorMessages.PLAYER_ID_LENGTH)
     @JsonbProperty("playerid")
     private String playerId;
 
-    @NotBlank(message = "Room code is required.")
+    @NotBlank(message = ErrorMessages.ROOM_CODE_REQUIRED)
     @Pattern(
             regexp = "^[A-Z0-9]+$",
-            message = "Room code must contain only uppercase letters and numbers."
+            message = ErrorMessages.ROOM_CODE_FORMAT
     )
     @JsonbProperty("roomcode")
     private String roomCode;

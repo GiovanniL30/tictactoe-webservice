@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.exceptions.mapper;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.dto.response.ErrorResponse;
 
 import javax.validation.ConstraintViolation;
@@ -26,6 +27,6 @@ public class ValidationExceptionMapper implements ExceptionMapper<ConstraintViol
                 .substring(violation.getPropertyPath().toString().lastIndexOf('.') + 1) + ": " + violation.getMessage())
                 .collect(Collectors.toList());
 
-        return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity(new ErrorResponse("Validation failed.", errors)).build();
+        return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity(new ErrorResponse(ErrorMessages.VALIDATION_FAILED, errors)).build();
     }
 }

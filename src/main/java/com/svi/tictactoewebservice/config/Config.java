@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.config;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -12,13 +13,13 @@ public class Config {
         try (InputStream input = Config.class.getClassLoader().getResourceAsStream("config.properties")) {
 
             if (input == null) {
-                throw new RuntimeException("config.properties not found.");
+                throw new RuntimeException(ErrorMessages.CONFIG_FILE_NOT_FOUND);
             }
 
             PROPERTIES.load(input);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load config.properties.", e);
+            throw new RuntimeException(ErrorMessages.CONFIG_FILE_LOAD_FAILED, e);
         }
     }
 
@@ -29,7 +30,7 @@ public class Config {
         String value = PROPERTIES.getProperty(key);
 
         if (value == null || value.isEmpty()) {
-            throw new RuntimeException("Configuration property not found: " + key);
+            throw new RuntimeException(ErrorMessages.format(ErrorMessages.CONFIG_PROPERTY_NOT_FOUND, key));
         }
 
         return value;

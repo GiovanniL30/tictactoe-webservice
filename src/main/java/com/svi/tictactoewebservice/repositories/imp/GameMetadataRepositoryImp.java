@@ -1,6 +1,7 @@
 package com.svi.tictactoewebservice.repositories.imp;
 
 import com.svi.tictactoewebservice.constants.Symbol;
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.exceptions.*;
 import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.PlayerData;
@@ -36,7 +37,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
 
             if (playerExists) {
                 throw new PlayerAlreadyExistsException(
-                        "Player already exists in the room."
+                        ErrorMessages.PLAYER_ALREADY_IN_ROOM
                 );
             }
 
@@ -46,7 +47,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
 
             if (symbolExists) {
                 throw new SymbolAlreadyTakenException(
-                        "Symbol " + player.getSymbol() + " is already taken."
+                        ErrorMessages.format(ErrorMessages.SYMBOL_ALREADY_TAKEN, player.getSymbol())
                 );
             }
         }
@@ -55,7 +56,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
         if ((players == null || players.isEmpty())
                 && player.getSymbol() != Symbol.X) {
             throw new SymbolOrderException(
-                    "Player X must be the first player to join the room."
+                    ErrorMessages.X_PLAYER_MUST_JOIN_FIRST
             );
         }
 
@@ -89,7 +90,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
     @Override
     public PlayerData increasePlayerScore(String roomCode, String playerId, int count) {
         if (roomNotExists(roomCode)) {
-            throw new RecordNotFoundException("Room Code does not exists.");
+            throw new RecordNotFoundException(ErrorMessages.ROOM_NOT_FOUND);
         }
 
         List<PlayerData> players = rooms.get(roomCode);
@@ -98,7 +99,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
                 .filter(p -> p.getPlayerId().equals(playerId))
                 .findFirst()
                 .orElseThrow(() ->
-                        new RecordNotFoundException("Player does not exist in the room."));
+                        new RecordNotFoundException(ErrorMessages.PLAYER_NOT_IN_ROOM));
 
         player.setScore(player.getScore() + count);
 
@@ -127,7 +128,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
 
         if (gameId == null) {
             throw new RecordNotFoundException(
-                    "Room code does not exist."
+                    ErrorMessages.ROOM_NOT_FOUND
             );
         }
 
@@ -137,7 +138,7 @@ public class GameMetadataRepositoryImp implements GameMetadataRepository {
     private void validateRoomNotFull(String roomCode) {
         if (!roomNotExists(roomCode) && rooms.get(roomCode).size() >= 2) {
             throw new RoomAlreadyFullException(
-                    "Room already contains 2 players. Cannot add more players."
+                    ErrorMessages.ROOM_FULL
             );
         }
     }

@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.services.imp;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.repositories.PlayerRepository;
 import com.svi.tictactoewebservice.services.PlayerService;
@@ -23,7 +24,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public List<JsonObject> listPlayerGames(String playerId) {
         if (FileUtil.playerNotExists(playerId)) {
-            throw new RecordNotFoundException("Record not found");
+            throw new RecordNotFoundException(ErrorMessages.RECORD_NOT_FOUND);
         }
 
         return playerRepository.getPlayerGames(playerId);
