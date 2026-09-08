@@ -9,9 +9,12 @@ import javax.servlet.annotation.WebListener;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 @WebListener
 public class AppContextInitializer implements ServletContextListener {
+
+    private static final Logger LOGGER = Logger.getLogger(AppContextInitializer.class.getName());
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -47,6 +50,6 @@ public class AppContextInitializer implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        System.out.println("Application destroyed!");
+        LOGGER.info("Application destroyed.");
     }
 }

@@ -1,22 +1,21 @@
 package com.svi.tictactoewebservice.dto.response;
 
-import javax.json.JsonObject;
 import java.util.List;
 
-public class ListGameResponse extends ApiResponse {
+public class ListGameResponse<T> extends ApiResponse {
 
-    private List<JsonObject> list;
+    private List<T> list;
 
-    public ListGameResponse(List<JsonObject> list, String msg) {
+    public ListGameResponse(List<T> list, String msg) {
         super(msg);
         this.list = list;
     }
 
-    public List<JsonObject> getList() {
+    public List<T> getList() {
         return list;
     }
 
-    public void setList(List<JsonObject> list) {
+    public void setList(List<T> list) {
         this.list = list;
     }
 }

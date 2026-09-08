@@ -6,6 +6,7 @@ import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Move;
 import com.svi.tictactoewebservice.models.Room;
+import com.svi.tictactoewebservice.models.GameMove;
 import com.svi.tictactoewebservice.repositories.GameRepository;
 import com.svi.tictactoewebservice.services.GameService;
 import com.svi.tictactoewebservice.utils.FileUtil;
@@ -48,37 +49,33 @@ public class GameServiceImpl implements GameService {
             throw new SymbolAlreadyTakenException(ErrorMessages.POSITION_ALREADY_TAKEN);
         }
 
-        try {
-            gameRepository.savePlayerMoveOnTxt(
-                    request.getPlayerId(),
-                    room.getGameId()
-            );
+        gameRepository.savePlayerGame(
+                request.getPlayerId(),
+                room.getGameId()
+        );
 
-            gameRepository.saveGameMoveOnTxt(request);
+        gameRepository.saveMove(request);
 
-            gameRepository.saveRoomOnTxt(
-                    room.getRoomCode(),
-                    room.getGameId()
-            );
+        gameRepository.saveRoomGame(
+                room.getRoomCode(),
+                room.getGameId()
+        );
 
-            gameMoves.add(new Move(
-                    request.getPlayerId(),
-                    request.getLocation()
-            ));
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+        gameMoves.add(new Move(
+                request.getPlayerId(),
+                request.getLocation()
+        ));
 
     }
 
 
     @Override
-    public List<JsonObject> listGameMoves(String playerId) {
-        if (FileUtil.gameNotExists(playerId)) {
+    public List<GameMove> listGameMoves(String gameId) {
+        if (FileUtil.gameNotExists(gameId)) {
             throw new RecordNotFoundException(ErrorMessages.RECORD_NOT_FOUND);
         }
 
-        return gameRepository.getGameMoves(playerId);
+        return gameRepository.getGameMoves(gameId);
     }
 
     @Override

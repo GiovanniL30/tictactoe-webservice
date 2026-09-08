@@ -2,12 +2,10 @@ package com.svi.tictactoewebservice.repositories.imp;
 
 import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.repositories.PlayerRepository;
+import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,17 +16,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class PlayerRepositoryImp implements PlayerRepository {
+public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
-    public List<JsonObject> getPlayerGames(String playerId) {
+    public List<String> getPlayerGames(String playerId) {
         Path playerFile = FileUtil.getPlayerRecordsPath().resolve(playerId + ".txt");
 
         try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
-            return lines.filter(line -> !line.isEmpty())
-                    .map(gameId -> Json.createObjectBuilder()
-                            .add("id", gameId)
-                            .build())
+            return lines.map(String::trim)
+                    .filter(line -> !line.isEmpty())
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
@@ -37,48 +33,36 @@ public class PlayerRepositoryImp implements PlayerRepository {
     }
 
     @Override
-    public List<JsonObject> listAllPlayers() {
+    public Map<String, List<Room>> listAllPlayers() {
         Map<String, List<String>> gamesByRoom = FileUtil.getGamesByRoom();
 
         try (Stream<Path> files = Files.list(FileUtil.getPlayerRecordsPath())) {
             return files
                     .filter(Files::isRegularFile)
                     .filter(FileUtil::isTxtFile)
-                    .map(playerFile -> buildPlayerRecord(playerFile, gamesByRoom))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(
+                            FileUtil::getFileNameWithoutExtension,
+                            playerFile -> buildPlayerGames(playerFile, gamesByRoom)
+                    ));
 
         } catch (IOException e) {
             throw new RuntimeException(ErrorMessages.PLAYER_RECORDS_RETRIEVAL_FAILED, e);
         }
     }
 
-    private JsonObject buildPlayerRecord(Path playerFile, Map<String, List<String>> gamesByRoom) {
+    private List<Room> buildPlayerGames(Path playerFile, Map<String, List<String>> gamesByRoom) {
         String playerId = FileUtil.getFileNameWithoutExtension(playerFile);
 
-        JsonArrayBuilder games = Json.createArrayBuilder();
-
         try (Stream<String> lines = Files.lines(playerFile, StandardCharsets.UTF_8)) {
-            lines.map(String::trim)
+            return lines.map(String::trim)
                     .filter(line -> !line.isEmpty())
-                    .forEach(gameId -> {
-                        String roomCode = findRoomCode(gameId, gamesByRoom);
-
-                        games.add(
-                                Json.createObjectBuilder()
-                                        .add("gameid", gameId)
-                                        .add("roomcode", roomCode)
-                                        .build()
-                        );
-                    });
+                    .map(gameId -> new Room(findRoomCode(gameId, gamesByRoom), gameId))
+                    .collect(Collectors.toList());
 
         } catch (IOException e) {
             throw new RuntimeException(ErrorMessages.format(ErrorMessages.PLAYER_RECORD_READ_FAILED, playerId), e);
         }
 
-        return Json.createObjectBuilder()
-                .add("playerid", playerId)
-                .add("games", games)
-                .build();
     }
 
     private String findRoomCode(String gameId, Map<String, List<String>> gamesByRoom) {

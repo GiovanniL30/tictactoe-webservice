@@ -29,7 +29,7 @@ public final class ErrorMessages {
     public static final String ROOM_FULL = "Room already contains 2 players. Cannot add more players.";
 
     public static final String VALIDATION_FAILED = "Validation failed.";
-    public static final String UNEXPECTED_SERVER_ERROR = "The server ran into an unexpected exception: %s";
+    public static final String UNEXPECTED_SERVER_ERROR = "The server encountered an unexpected error.";
     public static final String GAME_ID_REQUIRED = "Game ID is required.";
     public static final String GAME_ID_FORMAT = "Game ID must follow the format roomCode_UUID.";
     public static final String SYMBOL_REQUIRED = "Symbol is required.";

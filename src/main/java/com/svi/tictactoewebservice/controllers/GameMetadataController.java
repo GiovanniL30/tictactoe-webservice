@@ -42,7 +42,9 @@ public class GameMetadataController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response generateRoomKeys() {
         Room room = gameMetadataService.generateRoomKeys();
-        return Response.ok(new GameKeyResponse("Generated Room Keys.", room)).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(new GameKeyResponse("Generated Room Keys.", room))
+                .build();
     }
 
     @GET
@@ -61,7 +63,9 @@ public class GameMetadataController {
     public Response addPlayer(@PathParam("roomCode") String roomCode, @Valid PlayerRequest player) {
         PlayerData addedPlayer = gameMetadataService.addPlayer(roomCode, player);
 
-        return Response.ok(new GetPlayersResponse("Player added.", Collections.singletonList(addedPlayer))).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(new GetPlayersResponse("Player added.", Collections.singletonList(addedPlayer)))
+                .build();
     }
 
     @PATCH
@@ -78,16 +82,14 @@ public class GameMetadataController {
     @DELETE
     @Path("/game/{roomCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteGameData(@PathParam("roomCode") String roomCode) {
-        List<PlayerData> deletedPlayers = gameMetadataService.deleteRoom(roomCode);
-        return Response.ok(new GetPlayersResponse("Game data deleted.", deletedPlayers)).build();
+        gameMetadataService.deleteRoom(roomCode);
+        return Response.noContent().build();
     }
 
     @PATCH
     @Path("/game-key/regenerate/{roomCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response regenerateGameUUID(@PathParam("roomCode") String roomCode) {
         String newGameUUID = gameMetadataService.removeGameUUID(roomCode);
         return Response.ok(new GameKeyResponse("Game UUID regenerated.", new Room(roomCode, newGameUUID))).build();
