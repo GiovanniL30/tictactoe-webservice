@@ -1,6 +1,7 @@
 package com.svi.tictactoewebservice.config;
 
 import com.svi.tictactoewebservice.constants.ErrorMessages;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -40,7 +41,13 @@ public class Config {
         GAME_RECORDS_PATH,
         PLAYER_RECORDS_PATH,
         ROOMS_RECORDS_PATH,
-        ALLOWED_ORIGINS;
+        ALLOWED_ORIGINS,
+        CASSANDRA_IP,
+        CASSANDRA_PORT,
+        CASSANDRA_KEYSPACE,
+        GAMES_BY_ROOM_TABLE,
+        MOVES_BY_GAME_TABLE,
+        GAMES_BY_PLAYER_TABLE;
 
         public String value() {
             return name();

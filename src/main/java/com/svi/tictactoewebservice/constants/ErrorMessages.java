@@ -2,6 +2,8 @@ package com.svi.tictactoewebservice.constants;
 
 public final class ErrorMessages {
 
+    public static final String CASSANDRA_SESSION_NOT_INITIALIZED= "CassandraConnection has not been initialized. Call initialize() first.";
+
     public static final String CONFIG_FILE_NOT_FOUND = "config.properties not found.";
     public static final String CONFIG_FILE_LOAD_FAILED = "Failed to load config.properties.";
     public static final String CONFIG_PROPERTY_NOT_FOUND = "Configuration property not found: %s";
