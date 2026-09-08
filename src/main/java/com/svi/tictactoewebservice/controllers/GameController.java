@@ -4,6 +4,7 @@ import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.ListGameResponse;
 import com.svi.tictactoewebservice.services.GameService;
+import com.svi.tictactoewebservice.models.GameMove;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -30,16 +31,18 @@ public class GameController {
     public Response saveGameData(@Valid SaveMoveRequest saveMoveRequest) {
         gameService.saveMove(saveMoveRequest);
 
-        return Response.ok(new ApiResponse("Record saved.")).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(new ApiResponse("Record saved."))
+                .build();
     }
 
     @GET
     @Path("/{gameId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response listGameMoves(@PathParam("gameId") String gameId) {
-        List<JsonObject> gameMoves = gameService.listGameMoves(gameId);
+        List<GameMove> gameMoves = gameService.listGameMoves(gameId);
 
-        return Response.ok(new ListGameResponse(gameMoves, "Records found")).build();
+        return Response.ok(new ListGameResponse<>(gameMoves, "Records found")).build();
     }
 
     @GET
@@ -48,7 +51,7 @@ public class GameController {
     public Response getAllGames() {
         List<JsonObject> gameIds = gameService.getGameIds();
 
-        return Response.ok(new ListGameResponse(gameIds, "Records found")).build();
+        return Response.ok(new ListGameResponse<>(gameIds, "Records found")).build();
     }
 
 }

@@ -27,7 +27,7 @@ public class PlayerController {
     public Response listGames(@PathParam("playerId") String playerId) {
         List<JsonObject> playerGames = playerService.listPlayerGames(playerId);
 
-        return Response.ok(new ListGameResponse(playerGames, "Records found")).build();
+        return Response.ok(new ListGameResponse<>(playerGames, "Records found")).build();
     }
 
     @GET

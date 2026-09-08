@@ -1,11 +1,12 @@
 package com.svi.tictactoewebservice.repositories;
 
-import javax.json.JsonObject;
+import com.svi.tictactoewebservice.models.Room;
 import java.util.List;
+import java.util.Map;
 
 public interface PlayerRepository {
 
-    List<JsonObject> getPlayerGames(String playerId);
+    List<String> getPlayerGames(String playerId);
 
-    List<JsonObject> listAllPlayers();
+    Map<String, List<Room>> listAllPlayers();
 }

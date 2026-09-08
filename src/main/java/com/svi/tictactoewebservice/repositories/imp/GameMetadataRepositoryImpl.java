@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
-public class GameMetadataRepositoryImp implements GameMetadataRepository {
+public class GameMetadataRepositoryImpl implements GameMetadataRepository {
 
     private final SecureRandom RANDOM = new SecureRandom();
 

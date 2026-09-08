@@ -3,12 +3,11 @@ package com.svi.tictactoewebservice.repositories.imp;
 import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.models.Room;
+import com.svi.tictactoewebservice.models.GameMove;
 import com.svi.tictactoewebservice.repositories.GameRepository;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.json.Json;
-import javax.json.JsonObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,24 +18,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @ApplicationScoped
-public class GameRepositoryImp implements GameRepository {
+public class GameRepositoryImpl implements GameRepository {
 
     @Override
-    public List<JsonObject> getGameMoves(String gameId) {
+    public List<GameMove> getGameMoves(String gameId) {
         Path gameFile = FileUtil.getGameRecordsPath().resolve(gameId + ".txt");
 
         try (Stream<String> lines = Files.lines(gameFile, StandardCharsets.UTF_8)) {
             return lines.filter(line -> !line.isEmpty())
                     .map(line -> line.split(",", 5))
                     .filter(parts -> parts.length == 5)
-                    .map(parts ->
-                            Json.createObjectBuilder()
-                                    .add("gameid", parts[0])
-                                    .add("playerid", parts[1])
-                                    .add("symbol", parts[2])
-                                    .add("location", parts[3])
-                                    .add("datasaved", parts[4])
-                                    .build())
+                    .map(parts -> new GameMove(
+                            parts[0],
+                            parts[1],
+                            parts[2],
+                            Integer.parseInt(parts[3]),
+                            parts[4]))
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
@@ -45,7 +42,7 @@ public class GameRepositoryImp implements GameRepository {
     }
 
     @Override
-    public void savePlayerMoveOnTxt(String playerId, String gameId) {
+    public void savePlayerGame(String playerId, String gameId) {
         Path playerFile = FileUtil.getPlayerRecordsPath().resolve(playerId + ".txt");
 
         try {
@@ -72,7 +69,7 @@ public class GameRepositoryImp implements GameRepository {
     }
 
     @Override
-    public void saveGameMoveOnTxt(SaveMoveRequest request) {
+    public void saveMove(SaveMoveRequest request) {
         Room room = FileUtil.parseGameId(request.getGameId());
 
         Path gameFile = FileUtil.getGameRecordsPath().resolve(room.getGameId() + ".txt");
@@ -88,7 +85,7 @@ public class GameRepositoryImp implements GameRepository {
     }
 
     @Override
-    public void saveRoomOnTxt(String roomCode, String gameId) {
+    public void saveRoomGame(String roomCode, String gameId) {
         Path roomFile = FileUtil.getRoomRecordsPath().resolve(roomCode + ".txt");
 
         try {
