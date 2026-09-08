@@ -4,29 +4,31 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.svi.tictactoewebservice.config.Config;
 
-public class CassandraConnection implements AutoCloseable {
+public class CassandraConnection {
 
     private Cluster cluster;
     private Session session;
 
-    public void initialize() {
-        if (session != null) {
-            return;
-        }
+    private CassandraConnection() {
+        initialize();
+    }
 
+    public static CassandraConnection getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    private void initialize() {
         this.cluster = Cluster.builder()
                 .addContactPoint(Config.get(Config.Key.CASSANDRA_IP.value()))
-                .withPort(Integer.parseInt(Config.get(Config.Key.CASSANDRA_PORT.value())))
+                .withPort(Integer.parseInt(
+                        Config.get(Config.Key.CASSANDRA_PORT.value())
+                ))
                 .build();
 
-        this.session = cluster.connect(Config.get(Config.Key.CASSANDRA_KEYSPACE.value()));
+        this.session = cluster.connect( Config.get(Config.Key.CASSANDRA_KEYSPACE.value()));
     }
 
     public Session getSession() {
-        if (session == null) {
-            initialize();
-        }
-
         return session;
     }
 
@@ -34,14 +36,14 @@ public class CassandraConnection implements AutoCloseable {
         if (session != null && !session.isClosed()) {
             session.close();
         }
+
         if (cluster != null && !cluster.isClosed()) {
             cluster.close();
         }
     }
 
-    @Override
-    public void close() {
-        destroy();
+    private static class Holder {
+        private static final CassandraConnection INSTANCE = new CassandraConnection();
     }
 
 }
