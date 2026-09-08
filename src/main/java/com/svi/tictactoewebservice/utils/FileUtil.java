@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.utils;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.models.Room;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public final class FileUtil {
                     ));
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to retrieve room records.", e);
+            throw new RuntimeException(ErrorMessages.ROOM_RECORDS_RETRIEVAL_FAILED, e);
         }
     }
 
@@ -68,7 +69,7 @@ public final class FileUtil {
 
         } catch (IOException e) {
             throw new RuntimeException(
-                    "Failed to read room record.",
+                    ErrorMessages.ROOM_RECORD_READ_FAILED,
                     e
             );
         }
@@ -93,7 +94,7 @@ public final class FileUtil {
         try (Stream<String> lines = Files.lines(file, StandardCharsets.UTF_8)) {
             return lines.noneMatch(record::equals);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to check record.", e);
+            throw new RuntimeException(ErrorMessages.RECORD_CHECK_FAILED, e);
         }
     }
 

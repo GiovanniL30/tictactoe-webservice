@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.dto.request;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -7,13 +8,13 @@ import javax.validation.constraints.Size;
 
 public class PlayerRequest {
 
-    @NotBlank(message = "Player ID is required.")
-    @Size(min = 3, max = 7, message = "Player ID must be between 3 and 7 characters.")
+    @NotBlank(message = ErrorMessages.PLAYER_ID_REQUIRED)
+    @Size(min = 3, max = 7, message = ErrorMessages.PLAYER_ID_LENGTH)
     @JsonbProperty("playerid")
     private String playerId;
 
-    @NotBlank
-    @Pattern(regexp = "[XO]", message = "Symbol must be either X or O")
+    @NotBlank(message = ErrorMessages.SYMBOL_REQUIRED)
+    @Pattern(regexp = "[XO]", message = ErrorMessages.SYMBOL_FORMAT)
     private String symbol;
 
     public PlayerRequest() {

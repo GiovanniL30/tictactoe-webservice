@@ -1,6 +1,7 @@
 package com.svi.tictactoewebservice.services.imp;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Move;
@@ -44,7 +45,7 @@ public class GameServiceImpl implements GameService {
                 .anyMatch(move -> move.getPosition() == request.getLocation());
 
         if (positionTaken) {
-            throw new SymbolAlreadyTakenException("Failed to place move, position is already taken");
+            throw new SymbolAlreadyTakenException(ErrorMessages.POSITION_ALREADY_TAKEN);
         }
 
         try {
@@ -74,7 +75,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<JsonObject> listGameMoves(String playerId) {
         if (FileUtil.gameNotExists(playerId)) {
-            throw new RecordNotFoundException("Record not found");
+            throw new RecordNotFoundException(ErrorMessages.RECORD_NOT_FOUND);
         }
 
         return gameRepository.getGameMoves(playerId);

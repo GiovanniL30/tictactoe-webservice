@@ -1,37 +1,38 @@
 package com.svi.tictactoewebservice.dto.request;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.*;
 
 public class SaveMoveRequest {
 
-    @NotBlank(message = "gameid is required.")
+    @NotBlank(message = ErrorMessages.GAME_ID_REQUIRED)
     @Pattern(
             regexp = "^[A-Z0-9]+_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-            message = "Game ID must follow the format roomCode_UUID"
+            message = ErrorMessages.GAME_ID_FORMAT
     )
     @JsonbProperty("gameid")
     private String gameId;
 
-    @NotBlank
-    @Pattern(regexp = "[XO]", message = "Symbol must be either X or O")
+    @NotBlank(message = ErrorMessages.SYMBOL_REQUIRED)
+    @Pattern(regexp = "[XO]", message = ErrorMessages.SYMBOL_FORMAT)
     private String symbol;
 
-    @NotNull
-    @Min(value = 0, message = "Location must be between 0 and 8.")
-    @Max(value = 8, message = "Location must be between 0 and 8.")
+    @NotNull(message = ErrorMessages.LOCATION_REQUIRED)
+    @Min(value = 0, message = ErrorMessages.LOCATION_RANGE)
+    @Max(value = 8, message = ErrorMessages.LOCATION_RANGE)
     private Integer location;
 
-    @NotBlank(message = "Player ID is required.")
-    @Size(min = 3, max = 7, message = "Player ID must be between 3 and 7 characters.")
+    @NotBlank(message = ErrorMessages.PLAYER_ID_REQUIRED)
+    @Size(min = 3, max = 7, message = ErrorMessages.PLAYER_ID_LENGTH)
     @JsonbProperty("playerid")
     private String playerId;
 
-    @NotBlank
+    @NotBlank(message = ErrorMessages.DATETIME_REQUIRED)
     @JsonbProperty("datesave")
     @Pattern(
             regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
-            message = "Datetime must follow the format yyyy-MM-dd HH:mm:ss"
+            message = ErrorMessages.DATETIME_FORMAT
     )
     private String datetime;
 

@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.repositories.imp;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.repositories.PlayerRepository;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
@@ -31,7 +32,7 @@ public class PlayerRepositoryImp implements PlayerRepository {
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to retrieve player games.", e);
+            throw new RuntimeException(ErrorMessages.PLAYER_GAMES_RETRIEVAL_FAILED, e);
         }
     }
 
@@ -47,7 +48,7 @@ public class PlayerRepositoryImp implements PlayerRepository {
                     .collect(Collectors.toList());
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to retrieve player records.", e);
+            throw new RuntimeException(ErrorMessages.PLAYER_RECORDS_RETRIEVAL_FAILED, e);
         }
     }
 
@@ -71,7 +72,7 @@ public class PlayerRepositoryImp implements PlayerRepository {
                     });
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read player record: " + playerId, e);
+            throw new RuntimeException(ErrorMessages.format(ErrorMessages.PLAYER_RECORD_READ_FAILED, playerId), e);
         }
 
         return Json.createObjectBuilder()
