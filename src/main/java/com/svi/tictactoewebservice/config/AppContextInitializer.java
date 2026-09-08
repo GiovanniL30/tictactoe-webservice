@@ -1,5 +1,6 @@
 package com.svi.tictactoewebservice.config;
 
+import com.svi.tictactoewebservice.connection.CassandraConnection;
 import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
@@ -51,5 +52,6 @@ public class AppContextInitializer implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         LOGGER.info("Application destroyed.");
+        CassandraConnection.getInstance().destroy();
     }
 }
