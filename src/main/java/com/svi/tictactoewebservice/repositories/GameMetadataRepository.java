@@ -11,7 +11,7 @@ public interface GameMetadataRepository {
 
     List<PlayerData> getPlayers(String roomCode);
 
-    List<PlayerData> removeRoom(String roomCode);
+    void removeRoom(String roomCode);
 
     String regenerateGameUUID(String roomCode);
 

@@ -5,6 +5,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.svi.tictactoewebservice.config.Config;
 import com.svi.tictactoewebservice.connection.CassandraConnection;
+import com.svi.tictactoewebservice.constants.ErrorMessages;
 import com.svi.tictactoewebservice.models.GameMove;
 import com.svi.tictactoewebservice.utils.DateTimeUtil;
 import com.svi.tictactoewebservice.utils.ValidationUtil;
@@ -34,7 +35,7 @@ public class MovesByGameDao {
     }
 
     private MovesByGameDao(Session session) {
-        this.session = ValidationUtil.requireNonNull(session, "session must not be null");
+        this.session = ValidationUtil.requireNonNull(session, "session");
 
         String table = Config.get(Config.Key.MOVES_BY_GAME_TABLE.value());
 
@@ -43,17 +44,17 @@ public class MovesByGameDao {
     }
 
     public void save(UUID gameId, int moveNumber, int location, Date dateSaved, String playerId, String symbol) {
-        ValidationUtil.requireNonNull(gameId, "gameId must not be null");
-        ValidationUtil.requireNonNull(dateSaved, "dateSaved must not be null");
+        ValidationUtil.requireNonNull(gameId, "gameId");
+        ValidationUtil.requireNonNull(dateSaved, "dateSaved");
         ValidationUtil.requireText(playerId, "playerId");
         ValidationUtil.requireText(symbol, "symbol");
 
         if (moveNumber < 1 || moveNumber > 9) {
-            throw new IllegalArgumentException("moveNumber must be between 1 and 9");
+            throw new IllegalArgumentException(ErrorMessages.MOVE_NUMBER_RANGE);
         }
 
         if (location < 0 || location > 8) {
-            throw new IllegalArgumentException("location must be between 0 and 8");
+            throw new IllegalArgumentException(ErrorMessages.LOCATION_RANGE);
         }
 
         session.execute(insertMove.bind(gameId, moveNumber, location, dateSaved, playerId, symbol));

@@ -75,9 +75,9 @@ public class GameMetadataRepositoryImpl implements GameMetadataRepository {
     }
 
     @Override
-    public List<PlayerData> removeRoom(String roomCode) {
+    public void removeRoom(String roomCode) {
         gameUUIDs.remove(roomCode);
-        return rooms.remove(roomCode);
+        rooms.remove(roomCode);
     }
 
     @Override

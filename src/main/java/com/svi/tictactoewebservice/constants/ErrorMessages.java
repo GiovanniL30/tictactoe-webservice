@@ -2,8 +2,6 @@ package com.svi.tictactoewebservice.constants;
 
 public final class ErrorMessages {
 
-    public static final String CASSANDRA_SESSION_NOT_INITIALIZED= "CassandraConnection has not been initialized. Call initialize() first.";
-
     public static final String CONFIG_FILE_NOT_FOUND = "config.properties not found.";
     public static final String CONFIG_FILE_LOAD_FAILED = "Failed to load config.properties.";
     public static final String CONFIG_PROPERTY_NOT_FOUND = "Configuration property not found: %s";
@@ -21,6 +19,10 @@ public final class ErrorMessages {
 
     public static final String VALIDATION_FAILED = "Validation failed.";
     public static final String UNEXPECTED_SERVER_ERROR = "The server encountered an unexpected error.";
+    public static final String NULL_VALUE = "%s must not be null.";
+    public static final String BLANK_TEXT = "%s must not be blank.";
+    public static final String UUID_FORMAT = "%s must be a valid UUID.";
+    public static final String MOVE_NUMBER_RANGE = "Move number must be between 1 and 9.";
     public static final String GAME_ID_REQUIRED = "Game ID is required.";
     public static final String GAME_ID_FORMAT = "Game ID must follow the format roomCode_UUID.";
     public static final String SYMBOL_REQUIRED = "Symbol is required.";
