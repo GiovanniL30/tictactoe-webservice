@@ -100,12 +100,12 @@ public class GameServiceImpl implements GameService {
 
                     games.forEach(game -> gamesBuilder.add(
                             Json.createObjectBuilder()
-                                    .add("gameid", game.getGameId())
+                                    .add("gameId", game.getGameId())
                     ));
 
                     return Json.createObjectBuilder()
-                            .add("roomcode", roomCode)
-                            .add("gamecount", games.size())
+                            .add("roomCode", roomCode)
+                            .add("gameCount", games.size())
                             .add("games", gamesBuilder.build())
                             .build();
 

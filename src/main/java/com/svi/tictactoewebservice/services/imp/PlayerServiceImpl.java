@@ -34,7 +34,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         return gameIds.stream()
-                .map(gameId -> Json.createObjectBuilder().add("id", gameId).build())
+                .map(gameId -> Json.createObjectBuilder().add("gameId", gameId).build())
                 .collect(Collectors.toList());
     }
 
@@ -48,11 +48,11 @@ public class PlayerServiceImpl implements PlayerService {
     private JsonObject buildPlayerHistory(Map.Entry<String, List<Room>> player) {
         JsonArrayBuilder games = Json.createArrayBuilder();
         player.getValue().forEach(game -> games.add(Json.createObjectBuilder()
-                .add("gameid", game.getGameId())
-                .add("roomcode", game.getRoomCode())));
+                .add("gameId", game.getGameId())
+                .add("roomCode", game.getRoomCode())));
 
         return Json.createObjectBuilder()
-                .add("playerid", player.getKey())
+                .add("playerId", player.getKey())
                 .add("games", games)
                 .build();
     }

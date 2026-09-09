@@ -10,7 +10,6 @@ public class IncreasePlayerScoreRequest {
 
     @NotBlank(message = ErrorMessages.PLAYER_ID_REQUIRED)
     @Size(min = 3, max = 7, message = ErrorMessages.PLAYER_ID_LENGTH)
-    @JsonbProperty("playerid")
     private String playerId;
 
     @NotBlank(message = ErrorMessages.ROOM_CODE_REQUIRED)
@@ -18,7 +17,6 @@ public class IncreasePlayerScoreRequest {
             regexp = "^[A-Z0-9]+$",
             message = ErrorMessages.ROOM_CODE_FORMAT
     )
-    @JsonbProperty("roomcode")
     private String roomCode;
 
     public IncreasePlayerScoreRequest(){

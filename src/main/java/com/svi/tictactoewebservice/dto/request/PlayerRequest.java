@@ -10,7 +10,6 @@ public class PlayerRequest {
 
     @NotBlank(message = ErrorMessages.PLAYER_ID_REQUIRED)
     @Size(min = 3, max = 7, message = ErrorMessages.PLAYER_ID_LENGTH)
-    @JsonbProperty("playerid")
     private String playerId;
 
     @NotBlank(message = ErrorMessages.SYMBOL_REQUIRED)

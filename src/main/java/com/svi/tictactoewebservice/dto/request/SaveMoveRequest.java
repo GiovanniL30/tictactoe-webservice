@@ -11,7 +11,6 @@ public class SaveMoveRequest {
             regexp = "^[A-Z0-9]+_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
             message = ErrorMessages.GAME_ID_FORMAT
     )
-    @JsonbProperty("gameid")
     private String gameId;
 
     @NotBlank(message = ErrorMessages.SYMBOL_REQUIRED)
@@ -25,11 +24,10 @@ public class SaveMoveRequest {
 
     @NotBlank(message = ErrorMessages.PLAYER_ID_REQUIRED)
     @Size(min = 3, max = 7, message = ErrorMessages.PLAYER_ID_LENGTH)
-    @JsonbProperty("playerid")
     private String playerId;
 
     @NotBlank(message = ErrorMessages.DATETIME_REQUIRED)
-    @JsonbProperty("datesave")
+    @JsonbProperty("dateSave")
     @Pattern(
             regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
             message = ErrorMessages.DATETIME_FORMAT
