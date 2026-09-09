@@ -10,14 +10,17 @@ public class CassandraConnection {
     private Session session;
 
     private CassandraConnection() {
-        initialize();
     }
 
     public static CassandraConnection getInstance() {
         return Holder.INSTANCE;
     }
 
-    private void initialize() {
+    public void initialize() {
+        if (session != null && !session.isClosed()) {
+            return;
+        }
+
         this.cluster = Cluster.builder()
                 .addContactPoint(Config.get(Config.Key.CASSANDRA_IP.value()))
                 .withPort(Integer.parseInt(
@@ -25,10 +28,18 @@ public class CassandraConnection {
                 ))
                 .build();
 
-        this.session = cluster.connect( Config.get(Config.Key.CASSANDRA_KEYSPACE.value()));
+        this.session = cluster.connect(
+                Config.get(Config.Key.CASSANDRA_KEYSPACE.value())
+        );
     }
 
     public Session getSession() {
+        if (session == null || session.isClosed()) {
+            throw new IllegalStateException(
+                    "Cassandra connection has not been initialized."
+            );
+        }
+
         return session;
     }
 
@@ -45,5 +56,4 @@ public class CassandraConnection {
     private static class Holder {
         private static final CassandraConnection INSTANCE = new CassandraConnection();
     }
-
 }

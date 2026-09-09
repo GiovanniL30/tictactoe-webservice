@@ -1,8 +1,10 @@
 package com.svi.tictactoewebservice.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.Optional;
 
 public final class DateTimeUtil {
@@ -17,6 +19,18 @@ public final class DateTimeUtil {
 
     public static String format(LocalDateTime datetime) {
         return datetime.format(FORMATTER);
+    }
+
+    public static String format(Date datetime) {
+        return format(datetime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+    }
+
+    public static Date parseDate(String datetime) {
+        LocalDateTime parsed = parse(datetime)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "datetime must follow the format " + DATE_TIME_PATTERN
+                ));
+        return Date.from(parsed.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public static String now() {
