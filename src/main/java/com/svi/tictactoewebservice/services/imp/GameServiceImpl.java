@@ -90,16 +90,12 @@ public class GameServiceImpl implements GameService {
                     String roomCode = entry.getKey();
                     List<Room> games = entry.getValue();
 
-                    JsonArrayBuilder gamesBuilder =
-                            Json.createArrayBuilder();
+                    JsonArrayBuilder gamesBuilder = Json.createArrayBuilder();
 
-                    games.forEach(game -> {
-
-                        gamesBuilder.add(
-                                Json.createObjectBuilder()
-                                        .add("gameid", game.getGameId())
-                        );
-                    });
+                    games.forEach(game -> gamesBuilder.add(
+                            Json.createObjectBuilder()
+                                    .add("gameid", game.getGameId())
+                    ));
 
                     return Json.createObjectBuilder()
                             .add("roomcode", roomCode)
