@@ -2,7 +2,6 @@ package com.svi.tictactoewebservice.controllers;
 
 import com.svi.tictactoewebservice.dto.request.IncreasePlayerScoreRequest;
 import com.svi.tictactoewebservice.dto.request.PlayerRequest;
-import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.GameKeyResponse;
 import com.svi.tictactoewebservice.dto.response.GetPlayersResponse;
 import com.svi.tictactoewebservice.dto.response.IncreasePlayerScoreResponse;

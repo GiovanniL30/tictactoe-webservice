@@ -1,13 +1,15 @@
 package com.svi.tictactoewebservice.repositories.imp;
 
 import com.svi.tictactoewebservice.constants.ErrorMessages;
+import com.svi.tictactoewebservice.dao.GamesByPlayerDao;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
-import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.GameMove;
+import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.repositories.GameRepository;
 import com.svi.tictactoewebservice.utils.FileUtil;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +21,13 @@ import java.util.stream.Stream;
 
 @ApplicationScoped
 public class GameRepositoryImpl implements GameRepository {
+
+    private final GamesByPlayerDao gamesByPlayerDao;
+
+    @Inject
+    public GameRepositoryImpl(GamesByPlayerDao gamesByPlayerDao) {
+        this.gamesByPlayerDao = gamesByPlayerDao;
+    }
 
     @Override
     public List<GameMove> getGameMoves(String gameId) {
@@ -42,30 +51,8 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public void savePlayerGame(String playerId, String gameId) {
-        Path playerFile = FileUtil.getPlayerRecordsPath().resolve(playerId + ".txt");
-
-        try {
-
-            if (FileUtil.playerNotExists(playerId)) {
-                Files.write(playerFile,
-                        (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.WRITE);
-                return;
-            }
-
-            if (FileUtil.recordDoesNotExist(playerFile, gameId)) {
-                Files.write(
-                        playerFile,
-                        (gameId + System.lineSeparator()).getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.APPEND
-                );
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(ErrorMessages.PLAYER_GAME_SAVE_FAILED, e);
-        }
+    public void savePlayerGame(String playerId, String gameId, String roomCode) {
+        gamesByPlayerDao.save(playerId, gameId, roomCode);
     }
 
     @Override

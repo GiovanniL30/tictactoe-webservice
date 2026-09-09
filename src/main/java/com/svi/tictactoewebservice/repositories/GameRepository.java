@@ -9,7 +9,7 @@ public interface GameRepository {
 
     List<GameMove> getGameMoves(String gameId);
 
-    void savePlayerGame(String playerId, String gameId);
+    void savePlayerGame(String playerId, String gameId, String roomCode);
 
     void saveMove(SaveMoveRequest request);
 

@@ -49,11 +49,6 @@ public class GameServiceImpl implements GameService {
             throw new SymbolAlreadyTakenException(ErrorMessages.POSITION_ALREADY_TAKEN);
         }
 
-        gameRepository.savePlayerGame(
-                request.getPlayerId(),
-                room.getGameId()
-        );
-
         gameRepository.saveMove(request);
 
         gameRepository.saveRoomGame(
