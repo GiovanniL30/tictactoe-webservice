@@ -24,7 +24,6 @@ public class GamesByRoomDao {
 
     private final Session session;
     private final PreparedStatement insertRoom;
-    private final PreparedStatement getRoomGames;
     private final PreparedStatement getAllRoomGames;
 
     public GamesByRoomDao() {
@@ -37,7 +36,6 @@ public class GamesByRoomDao {
         String table = Config.get(Config.Key.GAMES_BY_ROOM_TABLE.value());
 
         this.insertRoom = session.prepare(String.format("INSERT INTO %s (room_code, game_id, created_at) VALUES (?, ?, ?)", table));
-        this.getRoomGames = session.prepare(String.format("SELECT game_id FROM %s WHERE room_code = ?", table));
         this.getAllRoomGames = session.prepare(String.format("SELECT room_code, game_id FROM %s", table));
     }
 
@@ -51,17 +49,6 @@ public class GamesByRoomDao {
 
     public void save(String roomCode, String gameId) {
         save(roomCode, ValidationUtil.parseUuid(gameId, "gameId"), new Date());
-    }
-
-    public List<Room> getRoomGames(String roomCode) {
-        ValidationUtil.requireText(roomCode, "roomCode");
-        List<Room> games = new ArrayList<>();
-
-        for (Row row : session.execute(getRoomGames.bind(roomCode))) {
-            games.add(new Room(roomCode, row.getUUID(GAME_ID).toString()));
-        }
-
-        return games;
     }
 
     public Map<String, List<Room>> getAllRoomGames() {
