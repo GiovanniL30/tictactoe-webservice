@@ -3,8 +3,8 @@ package com.svi.tictactoewebservice.controllers;
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.dto.response.ApiResponse;
 import com.svi.tictactoewebservice.dto.response.ListGameResponse;
-import com.svi.tictactoewebservice.services.GameService;
 import com.svi.tictactoewebservice.models.GameMove;
+import com.svi.tictactoewebservice.services.GameService;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -24,8 +24,15 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllGames() {
+        List<JsonObject> gameIds = gameService.getGameIds();
+
+        return Response.ok(new ListGameResponse<>(gameIds, "Records found")).build();
+    }
+
     @POST
-    @Path("/save")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveGameData(@Valid SaveMoveRequest saveMoveRequest) {
@@ -43,15 +50,6 @@ public class GameController {
         List<GameMove> gameMoves = gameService.listGameMoves(gameId);
 
         return Response.ok(new ListGameResponse<>(gameMoves, "Records found")).build();
-    }
-
-    @GET
-    @Path("")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllGames() {
-        List<JsonObject> gameIds = gameService.getGameIds();
-
-        return Response.ok(new ListGameResponse<>(gameIds, "Records found")).build();
     }
 
 }
