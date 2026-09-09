@@ -54,8 +54,14 @@ public class GameServiceImpl implements GameService {
             throw new SymbolAlreadyTakenException(ErrorMessages.POSITION_ALREADY_TAKEN);
         }
 
+        int nextMoveNumber = gameMoves.stream()
+                .mapToInt(GameMove::getMoveNumber)
+                .max()
+                .orElse(0) + 1;
+
         movesByGameDao.save(
                 room.getGameId(),
+                nextMoveNumber,
                 request.getLocation(),
                 request.getDatetime(),
                 request.getPlayerId(),
