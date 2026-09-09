@@ -1,5 +1,7 @@
 package com.svi.tictactoewebservice.utils;
 
+import com.svi.tictactoewebservice.constants.ErrorMessages;
+
 import java.util.UUID;
 
 public final class ValidationUtil {
@@ -7,9 +9,11 @@ public final class ValidationUtil {
     private ValidationUtil() {
     }
 
-    public static <T> T requireNonNull(T value, String message) {
+    public static <T> T requireNonNull(T value, String fieldName) {
         if (value == null) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(
+                    ErrorMessages.format(ErrorMessages.NULL_VALUE, fieldName)
+            );
         }
 
         return value;
@@ -17,7 +21,9 @@ public final class ValidationUtil {
 
     public static void requireText(String value, String fieldName) {
         if (value == null || value.trim().isEmpty()) {
-            throw new IllegalArgumentException(fieldName + " must not be blank");
+            throw new IllegalArgumentException(
+                    ErrorMessages.format(ErrorMessages.BLANK_TEXT, fieldName)
+            );
         }
 
     }
@@ -28,7 +34,10 @@ public final class ValidationUtil {
         try {
             return UUID.fromString(value);
         } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException(fieldName + " must be a valid UUID", exception);
+            throw new IllegalArgumentException(
+                    ErrorMessages.format(ErrorMessages.UUID_FORMAT, fieldName),
+                    exception
+            );
         }
     }
 }

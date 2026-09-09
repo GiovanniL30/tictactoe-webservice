@@ -35,9 +35,7 @@ public class CassandraConnection {
 
     public Session getSession() {
         if (session == null || session.isClosed()) {
-            throw new IllegalStateException(
-                    "Cassandra connection has not been initialized."
-            );
+            initialize();
         }
 
         return session;

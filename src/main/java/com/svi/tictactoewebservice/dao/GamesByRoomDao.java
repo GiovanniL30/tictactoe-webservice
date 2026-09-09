@@ -32,7 +32,7 @@ public class GamesByRoomDao {
     }
 
     private GamesByRoomDao(Session session) {
-        this.session = ValidationUtil.requireNonNull(session, "session must not be null");
+        this.session = ValidationUtil.requireNonNull(session, "session");
 
         String table = Config.get(Config.Key.GAMES_BY_ROOM_TABLE.value());
 
@@ -43,8 +43,8 @@ public class GamesByRoomDao {
 
     public void save(String roomCode, UUID gameId, Date createdAt) {
         ValidationUtil.requireText(roomCode, "roomCode");
-        ValidationUtil.requireNonNull(gameId, "gameId must not be null");
-        ValidationUtil.requireNonNull(createdAt, "createdAt must not be null");
+        ValidationUtil.requireNonNull(gameId, "gameId");
+        ValidationUtil.requireNonNull(createdAt, "createdAt");
 
         session.execute(insertRoom.bind(roomCode, gameId, createdAt));
     }
