@@ -3,15 +3,15 @@ package com.svi.tictactoewebservice.dto.request;
 import com.svi.tictactoewebservice.constants.ErrorMessages;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 public class SaveMoveRequest {
 
-    @NotBlank(message = ErrorMessages.GAME_ID_REQUIRED)
-    @Pattern(
-            regexp = "^[A-Z0-9]+_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-            message = ErrorMessages.GAME_ID_FORMAT
-    )
-    private String gameId;
+    @NotBlank(message = ErrorMessages.ROOM_CODE_REQUIRED)
+    private String roomCode;
+
+    @NotNull(message = ErrorMessages.GAME_ID_REQUIRED)
+    private UUID gameId;
 
     @NotBlank(message = ErrorMessages.SYMBOL_REQUIRED)
     @Pattern(regexp = "[XO]", message = ErrorMessages.SYMBOL_FORMAT)
@@ -37,11 +37,19 @@ public class SaveMoveRequest {
     public SaveMoveRequest() {
     }
 
-    public String getGameId() {
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
+    }
+
+    public UUID getGameId() {
         return gameId;
     }
 
-    public void setGameId(String gameId) {
+    public void setGameId(UUID gameId) {
         this.gameId = gameId;
     }
 

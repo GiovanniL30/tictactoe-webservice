@@ -13,10 +13,6 @@ public class IncreasePlayerScoreRequest {
     private String playerId;
 
     @NotBlank(message = ErrorMessages.ROOM_CODE_REQUIRED)
-    @Pattern(
-            regexp = "^[A-Z0-9]+$",
-            message = ErrorMessages.ROOM_CODE_FORMAT
-    )
     private String roomCode;
 
     public IncreasePlayerScoreRequest(){

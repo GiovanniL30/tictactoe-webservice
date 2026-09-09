@@ -10,7 +10,6 @@ import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.GameMove;
 import com.svi.tictactoewebservice.services.GameService;
-import com.svi.tictactoewebservice.utils.GameIdUtil;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,10 +40,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void saveMove(SaveMoveRequest request) {
-
-        Room room = GameIdUtil.parse(request.getGameId());
-
-        List<GameMove> gameMoves = movesByGameDao.getGameMoves(room.getGameId());
+        List<GameMove> gameMoves = movesByGameDao.getGameMoves(request.getGameId().toString());
 
         boolean positionTaken = gameMoves
                 .stream()
@@ -60,15 +56,15 @@ public class GameServiceImpl implements GameService {
                 .orElse(0) + 1;
 
         movesByGameDao.save(
-                room.getGameId(),
+                request.getGameId().toString(),
                 nextMoveNumber,
                 request.getLocation(),
                 request.getDatetime(),
                 request.getPlayerId(),
                 request.getSymbol()
         );
-        gamesByRoomDao.save(room.getRoomCode(), room.getGameId());
-        gamesByPlayerDao.save(request.getPlayerId(), room.getGameId(), room.getRoomCode());
+        gamesByRoomDao.save(request.getRoomCode(), request.getGameId().toString());
+        gamesByPlayerDao.save(request.getPlayerId(), request.getGameId().toString(), request.getRoomCode());
 
     }
 
