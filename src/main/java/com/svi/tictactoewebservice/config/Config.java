@@ -38,9 +38,6 @@ public class Config {
     }
 
     public enum Key {
-        GAME_RECORDS_PATH,
-        PLAYER_RECORDS_PATH,
-        ROOMS_RECORDS_PATH,
         ALLOWED_ORIGINS,
         CASSANDRA_IP,
         CASSANDRA_PORT,

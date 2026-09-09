@@ -7,18 +7,7 @@ public final class ErrorMessages {
     public static final String CONFIG_FILE_NOT_FOUND = "config.properties not found.";
     public static final String CONFIG_FILE_LOAD_FAILED = "Failed to load config.properties.";
     public static final String CONFIG_PROPERTY_NOT_FOUND = "Configuration property not found: %s";
-    public static final String RECORDS_DIRECTORY_INITIALIZATION_FAILED = "Failed to initialize records directories.";
-
-    public static final String ROOM_RECORDS_RETRIEVAL_FAILED = "Failed to retrieve room records.";
-    public static final String ROOM_RECORD_READ_FAILED = "Failed to read room record.";
-    public static final String RECORD_CHECK_FAILED = "Failed to check record.";
-    public static final String GAME_MOVES_RETRIEVAL_FAILED = "Failed to retrieve game moves.";
-    public static final String PLAYER_GAME_SAVE_FAILED = "Failed to save player game record.";
-    public static final String GAME_MOVE_SAVE_FAILED = "Failed to save game move record.";
-    public static final String ROOM_GAME_SAVE_FAILED = "Failed to save room game record.";
-    public static final String PLAYER_GAMES_RETRIEVAL_FAILED = "Failed to retrieve player games.";
-    public static final String PLAYER_RECORDS_RETRIEVAL_FAILED = "Failed to retrieve player records.";
-    public static final String PLAYER_RECORD_READ_FAILED = "Failed to read player record: %s";
+    public static final String CASSANDRA_INITIALIZATION_FAILED = "Failed to initialize Cassandra connection.";
 
     public static final String RECORD_NOT_FOUND = "Record not found.";
     public static final String ROOM_NOT_FOUND = "Room code does not exist.";
