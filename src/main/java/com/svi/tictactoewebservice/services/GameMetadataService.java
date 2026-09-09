@@ -17,9 +17,9 @@ public interface GameMetadataService {
 
     PlayerData increasePlayerScore(IncreasePlayerScoreRequest playerScoreRequest);
 
-    Room generateRoomKeys();
+    Room generateRoom();
 
-    String getRoomUUID(String roomCode);
+    String getGameId(String roomCode);
 
-    String removeGameUUID(String roomCode);
+    String regenerateGameId(String roomCode);
 }

@@ -13,14 +13,14 @@ public interface GameMetadataRepository {
 
     void removeRoom(String roomCode);
 
-    String regenerateGameUUID(String roomCode);
+    String regenerateGameId(String roomCode);
 
     PlayerData increasePlayerScore(String roomCode, String playerId, int count);
 
     boolean roomNotExists(String roomCode);
 
-    Room generateRoomKeys();
+    Room generateRoom();
 
-    String getRoomUUID(String roomCode);
+    String getGameId(String roomCode);
 
 }

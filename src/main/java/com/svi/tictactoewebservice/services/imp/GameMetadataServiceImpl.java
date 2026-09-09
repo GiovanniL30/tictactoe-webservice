@@ -53,22 +53,22 @@ public class GameMetadataServiceImpl implements GameMetadataService {
     }
 
     @Override
-    public Room generateRoomKeys() {
-        return gameMetadataRepository.generateRoomKeys();
+    public Room generateRoom() {
+        return gameMetadataRepository.generateRoom();
     }
 
     @Override
-    public String getRoomUUID(String roomCode) {
-        return gameMetadataRepository.getRoomUUID(roomCode);
+    public String getGameId(String roomCode) {
+        return gameMetadataRepository.getGameId(roomCode);
     }
 
     @Override
-    public String removeGameUUID(String roomCode) {
+    public String regenerateGameId(String roomCode) {
         if (gameMetadataRepository.roomNotExists(roomCode)) {
             throw new RecordNotFoundException(ErrorMessages.format(ErrorMessages.ROOM_NOT_FOUND_WITH_CODE, roomCode));
         }
 
-        return gameMetadataRepository.regenerateGameUUID(roomCode);
+        return gameMetadataRepository.regenerateGameId(roomCode);
     }
 
 }

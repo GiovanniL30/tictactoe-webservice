@@ -15,13 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @ApplicationScoped
 public class GameMetadataRepositoryImpl implements GameMetadataRepository {
 
-    private final SecureRandom RANDOM = new SecureRandom();
+    private final SecureRandom random = new SecureRandom();
 
     // Room code : Players
     private final Map<String, List<PlayerData>> rooms = new ConcurrentHashMap<>();
 
-    // Room code : Current Game UUID
-    private final Map<String, String> gameUUIDs = new ConcurrentHashMap<>();
+    // Room code : Current game ID
+    private final Map<String, String> gameIdsByRoomCode = new ConcurrentHashMap<>();
 
 
     @Override
@@ -76,14 +76,14 @@ public class GameMetadataRepositoryImpl implements GameMetadataRepository {
 
     @Override
     public void removeRoom(String roomCode) {
-        gameUUIDs.remove(roomCode);
+        gameIdsByRoomCode.remove(roomCode);
         rooms.remove(roomCode);
     }
 
     @Override
-    public String regenerateGameUUID(String roomCode) {
+    public String regenerateGameId(String roomCode) {
         String newGameId = UUID.randomUUID().toString();
-        gameUUIDs.put(roomCode, newGameId);
+        gameIdsByRoomCode.put(roomCode, newGameId);
         return newGameId;
     }
 
@@ -114,17 +114,17 @@ public class GameMetadataRepositoryImpl implements GameMetadataRepository {
     }
 
     @Override
-    public Room generateRoomKeys() {
+    public Room generateRoom() {
         String roomCode = generateRoomCode();
 
-        String gameId = gameUUIDs.computeIfAbsent(roomCode, key -> UUID.randomUUID().toString());
+        String gameId = gameIdsByRoomCode.computeIfAbsent(roomCode, key -> UUID.randomUUID().toString());
 
         return new Room(roomCode, gameId);
     }
 
     @Override
-    public String getRoomUUID(String roomCode) {
-        String gameId = gameUUIDs.get(roomCode);
+    public String getGameId(String roomCode) {
+        String gameId = gameIdsByRoomCode.get(roomCode);
 
         if (gameId == null) {
             throw new RecordNotFoundException(
@@ -149,7 +149,7 @@ public class GameMetadataRepositoryImpl implements GameMetadataRepository {
         StringBuilder code = new StringBuilder(4);
 
         for (int i = 0; i < 4; i++) {
-            int index = RANDOM.nextInt(roomCodeCharacters.length());
+            int index = random.nextInt(roomCodeCharacters.length());
             code.append(roomCodeCharacters.charAt(index));
         }
 

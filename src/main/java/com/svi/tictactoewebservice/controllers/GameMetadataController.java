@@ -39,8 +39,8 @@ public class GameMetadataController {
     @GET
     @Path("/game-key/generate")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response generateRoomKeys() {
-        Room room = gameMetadataService.generateRoomKeys();
+    public Response generateRoom() {
+        Room room = gameMetadataService.generateRoom();
         return Response.status(Response.Status.CREATED)
                 .entity(new GameKeyResponse("Generated Room Keys.", room))
                 .build();
@@ -49,9 +49,9 @@ public class GameMetadataController {
     @GET
     @Path("/game-key/{roomCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRoomUUID(@PathParam("roomCode") String roomCode) {
-        String gameRoomUUID = gameMetadataService.getRoomUUID(roomCode);
-        return Response.ok(new GameKeyResponse("Room Keys", new Room(roomCode, gameRoomUUID))).build();
+    public Response getGameId(@PathParam("roomCode") String roomCode) {
+        String gameId = gameMetadataService.getGameId(roomCode);
+        return Response.ok(new GameKeyResponse("Room Keys", new Room(roomCode, gameId))).build();
     }
 
 
@@ -89,8 +89,8 @@ public class GameMetadataController {
     @PATCH
     @Path("/game-key/regenerate/{roomCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response regenerateGameUUID(@PathParam("roomCode") String roomCode) {
-        String newGameUUID = gameMetadataService.removeGameUUID(roomCode);
-        return Response.ok(new GameKeyResponse("Game UUID regenerated.", new Room(roomCode, newGameUUID))).build();
+    public Response regenerateGameId(@PathParam("roomCode") String roomCode) {
+        String newGameId = gameMetadataService.regenerateGameId(roomCode);
+        return Response.ok(new GameKeyResponse("Game ID regenerated.", new Room(roomCode, newGameId))).build();
     }
 }
