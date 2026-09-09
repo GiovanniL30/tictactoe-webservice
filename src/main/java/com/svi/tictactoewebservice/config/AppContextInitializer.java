@@ -19,7 +19,7 @@ public class AppContextInitializer implements ServletContextListener {
             LOGGER.info("Application started");
             CassandraConnection.getInstance().initialize();
         } catch (Exception e) {
-            throw new RuntimeException(ErrorMessages.RECORDS_DIRECTORY_INITIALIZATION_FAILED, e);
+            throw new RuntimeException(ErrorMessages.CASSANDRA_INITIALIZATION_FAILED, e);
         }
     }
 

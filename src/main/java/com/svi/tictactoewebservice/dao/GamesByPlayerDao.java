@@ -12,18 +12,22 @@ import com.svi.tictactoewebservice.utils.ValidationUtil;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
 public class GamesByPlayerDao {
 
+    private static final String PLAYER_ID = "player_id";
     private static final String GAME_ID = "game_id";
     private static final String ROOM_CODE = "room_code";
 
     private final Session session;
     private final PreparedStatement insertGame;
     private final PreparedStatement selectGamesByPlayer;
+    private final PreparedStatement selectAllPlayerGames;
 
     public GamesByPlayerDao() {
         this(CassandraConnection.getInstance().getSession());
@@ -36,6 +40,7 @@ public class GamesByPlayerDao {
 
         this.insertGame = session.prepare(String.format("INSERT INTO %s (player_id, game_id, created_at, room_code) VALUES (?, ?, ?, ?)", table));
         this.selectGamesByPlayer = session.prepare(String.format("SELECT game_id, room_code FROM %s WHERE player_id = ?", table));
+        this.selectAllPlayerGames = session.prepare(String.format("SELECT player_id, game_id, room_code FROM %s", table));
     }
 
     public void save(String playerId, UUID gameId, Date createdAt, String roomCode) {
@@ -74,6 +79,21 @@ public class GamesByPlayerDao {
         }
 
         return gameIds;
+    }
+
+    public Map<String, List<Room>> getAllPlayerGames() {
+        Map<String, List<Room>> gamesByPlayer = new LinkedHashMap<>();
+
+        for (Row row : session.execute(selectAllPlayerGames.bind())) {
+            String playerId = row.getString(PLAYER_ID);
+            Room game = new Room(
+                    row.getString(ROOM_CODE),
+                    row.getUUID(GAME_ID).toString()
+            );
+            gamesByPlayer.computeIfAbsent(playerId, key -> new ArrayList<>()).add(game);
+        }
+
+        return gamesByPlayer;
     }
 
 }

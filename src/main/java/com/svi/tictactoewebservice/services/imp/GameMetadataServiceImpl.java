@@ -39,12 +39,12 @@ public class GameMetadataServiceImpl implements GameMetadataService {
     }
 
     @Override
-    public List<PlayerData> deleteRoom(String roomCode) {
+    public void deleteRoom(String roomCode) {
         if (gameMetadataRepository.roomNotExists(roomCode)) {
             throw new RecordNotFoundException(ErrorMessages.format(ErrorMessages.ROOM_NOT_FOUND_WITH_CODE, roomCode));
         }
 
-        return gameMetadataRepository.removeRoom(roomCode);
+        gameMetadataRepository.removeRoom(roomCode);
     }
 
     @Override

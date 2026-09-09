@@ -13,7 +13,7 @@ public interface GameMetadataService {
 
     List<PlayerData> getPlayers(String roomCode);
 
-    List<PlayerData> deleteRoom(String roomCode);
+    void deleteRoom(String roomCode);
 
     PlayerData increasePlayerScore(IncreasePlayerScoreRequest playerScoreRequest);
 
