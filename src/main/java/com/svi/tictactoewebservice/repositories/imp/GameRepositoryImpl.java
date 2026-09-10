@@ -21,11 +21,7 @@ public class GameRepositoryImpl implements GameRepository {
     private final MovesByGameDao movesByGameDao;
 
     @Inject
-    public GameRepositoryImpl(
-            GamesByPlayerDao gamesByPlayerDao,
-            GamesByRoomDao gamesByRoomDao,
-            MovesByGameDao movesByGameDao
-    ) {
+    public GameRepositoryImpl(GamesByPlayerDao gamesByPlayerDao, GamesByRoomDao gamesByRoomDao, MovesByGameDao movesByGameDao) {
         this.gamesByPlayerDao = gamesByPlayerDao;
         this.gamesByRoomDao = gamesByRoomDao;
         this.movesByGameDao = movesByGameDao;
@@ -35,14 +31,7 @@ public class GameRepositoryImpl implements GameRepository {
     public void saveMove(SaveMoveRequest request, int moveNumber) {
         String gameId = request.getGameId().toString();
 
-        movesByGameDao.save(
-                gameId,
-                moveNumber,
-                request.getLocation(),
-                request.getDatetime(),
-                request.getPlayerId(),
-                request.getSymbol()
-        );
+        movesByGameDao.save(gameId, moveNumber, request.getLocation(), request.getDatetime(), request.getPlayerId(), request.getSymbol());
         gamesByRoomDao.save(request.getRoomCode(), gameId);
         gamesByPlayerDao.save(request.getPlayerId(), gameId, request.getRoomCode());
     }
