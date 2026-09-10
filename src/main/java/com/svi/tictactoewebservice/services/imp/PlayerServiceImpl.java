@@ -1,8 +1,8 @@
 package com.svi.tictactoewebservice.services.imp;
 
 import com.svi.tictactoewebservice.constants.ErrorMessages;
-import com.svi.tictactoewebservice.dao.GamesByPlayerDao;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
+import com.svi.tictactoewebservice.repositories.PlayerRepository;
 import com.svi.tictactoewebservice.services.PlayerService;
 import com.svi.tictactoewebservice.models.Room;
 
@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class PlayerServiceImpl implements PlayerService {
 
-    private final GamesByPlayerDao gamesByPlayerDao;
+    private final PlayerRepository playerRepository;
 
     @Inject
-    public PlayerServiceImpl(GamesByPlayerDao gamesByPlayerDao) {
-        this.gamesByPlayerDao = gamesByPlayerDao;
+    public PlayerServiceImpl(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
     }
 
     @Override
     public List<JsonObject> listPlayerGames(String playerId) {
-        List<String> gameIds = gamesByPlayerDao.getPlayerGameIds(playerId);
+        List<String> gameIds = playerRepository.getPlayerGameIds(playerId);
 
         if (gameIds.isEmpty()) {
             throw new RecordNotFoundException(ErrorMessages.RECORD_NOT_FOUND);
@@ -40,7 +40,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<JsonObject> getAllPlayers() {
-        return gamesByPlayerDao.getAllPlayerGames().entrySet().stream()
+        return playerRepository.getAllPlayerGames().entrySet().stream()
                 .map(this::buildPlayerHistory)
                 .collect(Collectors.toList());
     }

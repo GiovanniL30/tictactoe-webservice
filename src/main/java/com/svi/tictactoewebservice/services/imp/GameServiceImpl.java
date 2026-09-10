@@ -2,13 +2,11 @@ package com.svi.tictactoewebservice.services.imp;
 
 import com.svi.tictactoewebservice.dto.request.SaveMoveRequest;
 import com.svi.tictactoewebservice.constants.ErrorMessages;
-import com.svi.tictactoewebservice.dao.GamesByPlayerDao;
-import com.svi.tictactoewebservice.dao.GamesByRoomDao;
-import com.svi.tictactoewebservice.dao.MovesByGameDao;
 import com.svi.tictactoewebservice.exceptions.RecordNotFoundException;
 import com.svi.tictactoewebservice.exceptions.SymbolAlreadyTakenException;
 import com.svi.tictactoewebservice.models.Room;
 import com.svi.tictactoewebservice.models.GameMove;
+import com.svi.tictactoewebservice.repositories.GameRepository;
 import com.svi.tictactoewebservice.services.GameService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,24 +21,16 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class GameServiceImpl implements GameService {
 
-    private final GamesByPlayerDao gamesByPlayerDao;
-    private final GamesByRoomDao gamesByRoomDao;
-    private final MovesByGameDao movesByGameDao;
+    private final GameRepository gameRepository;
 
     @Inject
-    public GameServiceImpl(
-            GamesByPlayerDao gamesByPlayerDao,
-            GamesByRoomDao gamesByRoomDao,
-            MovesByGameDao movesByGameDao
-    ) {
-        this.gamesByPlayerDao = gamesByPlayerDao;
-        this.gamesByRoomDao = gamesByRoomDao;
-        this.movesByGameDao = movesByGameDao;
+    public GameServiceImpl(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
 
     @Override
     public void saveMove(SaveMoveRequest request) {
-        List<GameMove> gameMoves = movesByGameDao.getGameMoves(request.getGameId().toString());
+        List<GameMove> gameMoves = gameRepository.getGameMoves(request.getGameId().toString());
 
         boolean positionTaken = gameMoves
                 .stream()
@@ -55,23 +45,13 @@ public class GameServiceImpl implements GameService {
                 .max()
                 .orElse(0) + 1;
 
-        movesByGameDao.save(
-                request.getGameId().toString(),
-                nextMoveNumber,
-                request.getLocation(),
-                request.getDatetime(),
-                request.getPlayerId(),
-                request.getSymbol()
-        );
-        gamesByRoomDao.save(request.getRoomCode(), request.getGameId().toString());
-        gamesByPlayerDao.save(request.getPlayerId(), request.getGameId().toString(), request.getRoomCode());
-
+        gameRepository.saveMove(request, nextMoveNumber);
     }
 
 
     @Override
     public List<GameMove> listGameMoves(String gameId) {
-        List<GameMove> gameMoves = movesByGameDao.getGameMoves(gameId);
+        List<GameMove> gameMoves = gameRepository.getGameMoves(gameId);
 
         if (gameMoves.isEmpty()) {
             throw new RecordNotFoundException(ErrorMessages.RECORD_NOT_FOUND);
@@ -83,7 +63,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<JsonObject> getGameIds() {
 
-        Map<String, List<Room>> gamesByRoom = gamesByRoomDao.getAllRoomGames();
+        Map<String, List<Room>> gamesByRoom = gameRepository.getAllRoomGames();
 
         return gamesByRoom.entrySet()
                 .stream()
